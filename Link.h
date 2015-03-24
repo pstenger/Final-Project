@@ -28,6 +28,7 @@ bool Link::init() {
   bool success = true;
   if(SDL_Init(SDL_INIT_VIDEO)<0){
     cout<<"SDL could not initialize! SDL Error"<<SDL_GetError()<<"\n";
+    success=false;
   } else {
     gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT , SDL_WINDOW_SHOWN );
     if( gWindow == NULL )
@@ -99,11 +100,7 @@ SDL_Surface* Link::loadSurface( string path )
 }
 
 void Link::runfunc (){
-  //Main loop flag
-  bool quit = false;
-  SDL_Rect stretchRect;
-  //Event handler
-  SDL_Event e;
+  //Main loop flag 
 
   //Start up SDL and create window
   if( !init() ){
@@ -113,7 +110,8 @@ void Link::runfunc (){
     if( !loadMedia() ){
       printf( "Failed to load media!\n" );
     } else{
-
+      bool quit = false;
+      SDL_Event e;
       while( !quit ){
 	//Handle events on queue
 	while( SDL_PollEvent( &e ) != 0 ){
@@ -122,7 +120,7 @@ void Link::runfunc (){
 	    quit = true;
 	
 	  } else {
-
+	    SDL_Rect stretchRect;
 	    stretchRect.x = 0;
 	    stretchRect.y = 0;
 	    stretchRect.w = SCREEN_WIDTH;
@@ -138,6 +136,7 @@ void Link::runfunc (){
     }
     //Free resources and close SDL
     close();
+  }
 }
 
 #endif
