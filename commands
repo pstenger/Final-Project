@@ -1,0 +1,4 @@
+#! /usr/bin/perl
+
+system("setenv PATH /afs/nd.edu/user14/csesoft/new/bin:$PATH");
+system ("setenv LD_LIBRARY_PATH /afs/nd.edu/user14/csesoft/new/lib:$LD_LIBRARY_PATH");

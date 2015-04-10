@@ -2,6 +2,7 @@
 #ifndef LINK_H
 #define LINK_H
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include "Character.h"  //base class
 #include <stdio.h>
 #include <iostream>
@@ -10,19 +11,94 @@ using namespace std;
 class Link: public Character {
  public:
   Link();
+  ~Link();
+  static const int img_vel=10;
   bool init();
   //Loads media
   bool loadMedia();
   //Frees media and shuts down SDL
   void close();
-  SDL_Surface* loadSurface( string path );
+  SDL_Texture* loadTexture( string path );
   void runfunc(); //runs funcs to display image
+  void handleevent(SDL_Event& e);
+  void move();
+  void free();
  private: 
   string imagename;  //character image
+  int xvel, yvel;
+  int xpos, ypos;
+  int mWidth;
+  int mHeight;
+  SDL_Texture* mTexture;
 };
 
 Link :: Link (){
-  imagename= "link.bmp";
+  imagename= "link.png";
+  xvel =0;
+  yvel=0;
+  xpos=25;
+  ypos=900;
+  mWidth=0;
+  mHeight=0;
+  mTexture=NULL;
+}
+
+Link::~Link(){
+  free();
+}
+
+void Link::handleevent(SDL_Event& e){
+  //make sure event is key press
+  if( e.type == SDL_KEYDOWN && e.key.repeat == 0 ){
+      //Adjust the velocity
+      switch( e.key.keysym.sym ){
+	case SDLK_UP: yvel -= img_vel; break; //top of screen is 0 so - goes up
+	case SDLK_DOWN: yvel += img_vel; break;
+	case SDLK_LEFT: xvel -= img_vel; break;
+	case SDLK_RIGHT: xvel += img_vel; break;
+        }
+  } else if( e.type == SDL_KEYUP && e.key.repeat == 0 ){ //if key was released
+      //Adjust the velocity
+      switch( e.key.keysym.sym )
+        {
+	case SDLK_UP: yvel += img_vel; break;
+	case SDLK_DOWN: yvel -= img_vel; break;
+	case SDLK_LEFT: xvel += img_vel; break;
+	case SDLK_RIGHT: xvel -= img_vel; break;
+        }
+    }
+
+
+}
+
+void Link::move(){
+  //Move up or down
+  ypos += yvel;
+
+  //If it went too far up or down
+  if( ( ypos < 0 ) || ( ypos > SCREEN_HEIGHT ) )
+    {
+      //Move back
+      ypos -= yvel;
+    }
+  //Move left or right
+  xpos += xvel;
+
+  //If it went too far to the left or right
+  if( ( xpos < 0 ) || ( xpos > SCREEN_WIDTH ) )
+    {
+      //Move back
+      xpos -= xvel;
+    }
+}
+
+void Link::free(){
+  if(mTexture != NULL){
+    SDL_DestroyTexture( mTexture );
+    mTexture = NULL;
+    mWidth=0;
+    mHeight=0;
+  }
 }
 
 bool Link::init() {
@@ -35,14 +111,26 @@ bool Link::init() {
     if( gWindow == NULL ){
 	printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
 	success=false;
-      }
-    else{
+      } else{
 
 	    //Get window surface
-	    gScreenSurface = SDL_GetWindowSurface( gWindow );
-	  
-      }
-  }
+      gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED );
+      if( gRenderer == NULL ){
+	  printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
+	  success = false;
+	} else {
+	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	//Initialize PNG loading
+	int imgFlags= IMG_INIT_PNG;
+	if( !( IMG_Init( imgFlags ) & imgFlags ) ){
+	    printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
+	    success = false;
+	  }
+
+      } 
+      
+    }
+  }  
   return success;
 }
 
@@ -53,8 +141,8 @@ bool Link::loadMedia(){
   bool success = true;
 
   //Load default surface
-  gImage = loadSurface( imagename );
-  if( gImage == NULL ){
+  gImage = loadTexture( imagename );
+  if( gImage == NULL){
 
       printf( "Failed to load default image!\n" );
       success = false;
@@ -63,43 +151,47 @@ bool Link::loadMedia(){
 }
 
 void Link::close(){
-  SDL_FreeSurface( gImage );
-  gImage = NULL;
+  free();
+  SDL_DestroyRenderer( gRenderer);
   //Destroy window
   SDL_DestroyWindow( gWindow );
   gWindow=NULL;
+  gRenderer= NULL;
   //Quit SDL subsystems
   SDL_Quit();
 
 }
 
 
-SDL_Surface* Link::loadSurface( string path ){
+SDL_Texture* Link::loadTexture( string path ){
+  free();
   //The final optimized image
-  SDL_Surface* optimizedSurface = NULL;
+  SDL_Texture* newTexture = NULL;
 
   //Load image at specified path
-  SDL_Surface* loadedSurface = SDL_LoadBMP( path.c_str() );
-  if( loadedSurface == NULL ){
+  SDL_Surface* loadedTexture = IMG_Load( path.c_str() );
+  if( loadedTexture == NULL ){
 
-      cout<<"Unable to load image"<<SDL_GetError()<<"\n";
+      cout<<"Unable to load image"<<IMG_GetError()<<"\n";
     }
   else {
     //Convert surface to screen format
-    optimizedSurface = SDL_ConvertSurface( loadedSurface, gScreenSurface->format, NULL );
-    if( optimizedSurface == NULL ) {
+    newTexture = SDL_CreateTextureFromSurface( gRenderer, loadedTexture);
+    if( newTexture == NULL ) {
       printf( "Unable to optimize image %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
+    } else {
+      mWidth = loadedTexture->w;
+      mHeight =loadedTexture->h;
     }
 
     //Get rid of old loaded surface
-    SDL_FreeSurface( loadedSurface );
+    SDL_FreeSurface( loadedTexture );
   }
-
-  return optimizedSurface;
+  mTexture= newTexture;
+  return  mTexture; 
 }
 
 void Link::runfunc (){
-  //Main loop flag 
 
   //Start up SDL and create window
   if( !init() ){
@@ -118,18 +210,18 @@ void Link::runfunc (){
 	  if( e.type == SDL_QUIT ){
 	    quit = true;
 	
-	  } else {
-	    SDL_Rect stretchRect;
-	    stretchRect.x = 0;
-	    stretchRect.y = 0;
-	    stretchRect.w = SCREEN_WIDTH;
-	    stretchRect.h = SCREEN_HEIGHT;
-	    SDL_BlitScaled( gImage, NULL, gScreenSurface, &stretchRect );
-	    //Update the surface
-	    SDL_UpdateWindowSurface( gWindow );
-
-	  }
+	  } 
+	  handleevent(e);
 	}
+	move();    
+	SDL_RenderClear( gRenderer );
+	SDL_Rect renderQuad = { xpos, ypos, mWidth, mHeight};
+	SDL_RenderCopy( gRenderer, mTexture, NULL, &renderQuad);
+	//Update the surface
+        SDL_RenderPresent( gRenderer );
+
+	 
+	
 
       }
     }
