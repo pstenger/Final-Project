@@ -101,9 +101,14 @@ void Background::free()
 	}
 }
 
-void Background::render(int x, int y, SDL_Renderer* gRenderer){
+void Background::render(int SCREEN_WIDTH, int SCREEN_HEIGHT, SDL_Renderer* gRenderer){
   //SDL_RenderClear(gRenderer);
-  SDL_Rect renderQuad={x, y, mWidth, mHeight};
+  
+  SDL_Rect renderQuad;
+  renderQuad.x=0;
+  renderQuad.y=0;
+  renderQuad.w=SCREEN_WIDTH;
+  renderQuad.h=SCREEN_HEIGHT;
   SDL_RenderCopy(gRenderer, mTexture, NULL, &renderQuad);
   SDL_RenderPresent(gRenderer);
 }

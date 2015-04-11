@@ -10,9 +10,9 @@ using namespace std;
 
 class Mario: public Character {
  public:
-  Mario();
+  Mario(int player=1);
   ~Mario();
-  static const int img_vel=5;
+  static const int img_vel=10;
   //Loads media
   bool loadMedia(SDL_Renderer*);
   //Frees media and shuts down SDL
@@ -30,14 +30,15 @@ class Mario: public Character {
   SDL_Texture* mTexture;
   int jump, jump2; //keeps track of jump and midair jump
   int t, t2;
+  int controls; //1 for player 1 controls and 2 for player 2 controls
 };
 
-Mario::Mario (){
+Mario::Mario (int player){
   imagename= "mario.png";
   xvel =0;
   yvel=0;
-  xpos=25;
-  ypos=400;
+  xpos=85;
+  ypos=230;
   mWidth=0;
   mHeight=0;
   mTexture=NULL;
@@ -45,6 +46,7 @@ Mario::Mario (){
   t=0;
   t2=0;
   jump2=0;
+  controls=player;
 }
 
 Mario::~Mario(){
@@ -53,10 +55,11 @@ Mario::~Mario(){
 
 void Mario::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
   //make sure event is key press
-  if( e.type == SDL_KEYDOWN && e.key.repeat == 0 ){
+  if(controls==1){ //if player 1
+    if( e.type == SDL_KEYDOWN && e.key.repeat == 0 ){
       //Adjust the velocity
       switch( e.key.keysym.sym ){
-	case SDLK_UP: 
+        case SDLK_UP: 
 	  if(jump>0 && jump2>0){
 	    break;
 	  } else if(jump>0){
@@ -96,6 +99,52 @@ void Mario::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
         break;
       }
 
+    }
+  } else if (controls==2){  //if player 2
+    if( e.type == SDL_KEYDOWN && e.key.repeat == 0 ){
+      //Adjust the velocity
+      switch( e.key.keysym.sym ){
+      case SDLK_w:
+	if(jump>0 && jump2>0){
+	  break;
+	} else if(jump>0){
+	  jump2=20;
+	  t2=0;
+	  break;
+	} else {
+	  jump=15;
+	  t=0;
+	  t2=0;
+	  break;
+	}
+      case SDLK_s:
+	imagename="mariocrouch.png";
+	loadMedia(gRenderer);
+	break;
+      case SDLK_a:
+	xvel -= img_vel;
+	break;
+      case SDLK_d:
+	xvel += img_vel;
+	break;
+      }
+    } else if( e.type == SDL_KEYUP && e.key.repeat == 0 ){ //if key was released
+      //Adjust the velocity
+      switch( e.key.keysym.sym )
+	{
+	case SDLK_s:
+	  imagename="mario.png";
+	  loadMedia(gRenderer);
+	  break;
+	case SDLK_a:
+	  xvel += img_vel;
+	  break;
+	case SDLK_d:
+	  xvel -= img_vel;
+	  break;
+	}
+
+    }
   }
 }
 
@@ -103,20 +152,17 @@ void Mario::move(int SCREEN_WIDTH, int SCREEN_HEIGHT){
   //Move up or down
   ypos += yvel;
 
-  //If it went too far up or down
-  if( ( ypos < 0 ) || ( ypos > SCREEN_HEIGHT ) )
-    {
-      //Move back
-      ypos -= yvel;
-    }
   //Move left or right
   xpos += xvel;
-
+  //continue falling if under stage
+  if( ypos > 230){
+    ypos+=10;
+  }
+    
   //If it went too far to the left or right
-  if( ( xpos < 0 ) || ( xpos+mWidth > SCREEN_WIDTH ) )
-    {
+  if( ( xpos < 85 ) || ( xpos+mWidth > SCREEN_WIDTH-85 ) ){
       //Move back
-      xpos -= xvel;
+      ypos += 10;
     }
 }
 
@@ -178,11 +224,11 @@ void Mario::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGH
   //  SDL_RenderClear( gRenderer );
   SDL_Rect renderQuad = { xpos, ypos-jump, mWidth, mHeight};
 	if(jump>0){
-	  jump=15+2*t-.02*t*t+jump2;
+	  jump=15+3*t-.1*t*t+jump2;
 	  t++;
 	  if (jump2>0){
-	  jump2=15+2*t2-.02*t2*t2;
-	  t2++;
+	    jump2=20+3*t2-.1*t2*t2;
+	    t2++;
 	  }
         }
    

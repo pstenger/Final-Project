@@ -16,14 +16,17 @@ int SCREEN_WIDTH=640;
 int SCREEN_HEIGHT=480;
 SDL_Texture* background;
 int main (){ 
-   Mario mario1;
+  Mario mario1(1);
+  Mario mario2(2);
   Character * character1= &mario1;
+  Character * character2=&mario2;
   Background background;
   //Start up SDL and create window
   
   init();
   background.Load("background.png",gRenderer);
-  character1->loadMedia(gRenderer); 
+  character1->loadMedia(gRenderer);
+  character2->loadMedia(gRenderer);
   bool quit = false;
   SDL_Event e;
   while( !quit ){
@@ -34,14 +37,17 @@ int main (){
             quit = true;
       }
       character1->handleevent(e, gRenderer);
+      character2->handleevent(e, gRenderer);
     }
    
-    background.render(0, 0, gRenderer);
+    background.render(SCREEN_WIDTH, SCREEN_HEIGHT, gRenderer);
     character1->display(gRenderer, SCREEN_WIDTH, SCREEN_HEIGHT); 
+    character2->display(gRenderer, SCREEN_WIDTH, SCREEN_HEIGHT);
     SDL_RenderClear(gRenderer);
   }
   background.free();
   character1->free();
+  character2->free();
   close();
   return 0;
 }
