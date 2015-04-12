@@ -21,16 +21,23 @@ class Mario: public Character {
   void handleevent(SDL_Event& e, SDL_Renderer*);
   void move(int, int);
   void free();
+  int get_xpos();
+  int get_ypos();
+  int get_width(); //return width of image
+  int get_height(); //return height of image
  private: 
   string imagename;  //character image
   int xvel, yvel;
   int xpos, ypos;
-  int mWidth;
-  int mHeight;
+  int mWidth; //width of image
+  int mHeight; //height of image
   SDL_Texture* mTexture;
   int jump, jump2; //keeps track of jump and midair jump
-  int t, t2;
+  int t, t2;   //timer variables for jump
   int controls; //1 for player 1 controls and 2 for player 2 controls
+  SDL_RendererFlip flip;
+  int attack1count;  //counter to keep track of attack cycle
+  
 };
 
 Mario::Mario (int player){
@@ -47,10 +54,27 @@ Mario::Mario (int player){
   t2=0;
   jump2=0;
   controls=player;
+  flip=SDL_FLIP_NONE;
+  attack1count=0;
 }
 
 Mario::~Mario(){
   free();
+}
+
+int Mario::get_width(){
+  return(mWidth);
+}
+int Mario::get_height(){
+  return(mHeight);
+}
+
+int Mario::get_xpos(){
+  return(xpos);
+}
+
+int Mario::get_ypos(){
+  return(ypos);
 }
 
 void Mario::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
@@ -78,11 +102,30 @@ void Mario::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
 	  break;
 	case SDLK_LEFT: 
 	  xvel -= img_vel; 
+	  if(flip==SDL_FLIP_NONE){
+	    flip=SDL_FLIP_HORIZONTAL;
+	  }
 	  break;
 	case SDLK_RIGHT: 
 	  xvel += img_vel; 
+	  if(flip==SDL_FLIP_HORIZONTAL){
+	    flip=SDL_FLIP_NONE;
+	  }
 	  break;
-        }
+        case SDLK_COMMA:
+	  if(attack1count==0){
+	    attack1count=20;
+	    imagename="marioattack1_1.png";
+	    loadMedia(gRenderer);
+	  } else if(attack1count==10){
+	    imagename="marioattack1_2.png";
+            loadMedia(gRenderer);
+	  } else if (attack1count==0){
+	    imagename="mario.png";
+            loadMedia(gRenderer);
+	  }
+	  break;
+      }
       } else if( e.type == SDL_KEYUP && e.key.repeat == 0 ){ //if key was released
     //Adjust the velocity
       switch( e.key.keysym.sym )
@@ -97,8 +140,12 @@ void Mario::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
       case SDLK_RIGHT: 
         xvel -= img_vel; 
         break;
+      
+      case SDLK_COMMA:
+	imagename="mario.png";
+	loadMedia(gRenderer);
+	break;
       }
-
     }
   } else if (controls==2){  //if player 2
     if( e.type == SDL_KEYDOWN && e.key.repeat == 0 ){
@@ -123,10 +170,32 @@ void Mario::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
 	break;
       case SDLK_a:
 	xvel -= img_vel;
+	if(flip==SDL_FLIP_NONE){
+	  flip=SDL_FLIP_HORIZONTAL;
+	}
+
 	break;
       case SDLK_d:
 	xvel += img_vel;
+	if(flip==SDL_FLIP_HORIZONTAL){
+	  flip=SDL_FLIP_NONE;
+	}
 	break;
+      case SDLK_g:
+	if(attack1count==0){
+	  attack1count=20;
+	  imagename="marioattack1_1.png";
+	  loadMedia(gRenderer);
+	} else if(attack1count==10){
+	  imagename="marioattack1_2.png";
+	  loadMedia(gRenderer);
+	} else if (attack1count==0){
+	  imagename="mario.png";
+	  loadMedia(gRenderer);
+	}
+
+	break;
+
       }
     } else if( e.type == SDL_KEYUP && e.key.repeat == 0 ){ //if key was released
       //Adjust the velocity
@@ -142,6 +211,12 @@ void Mario::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
 	case SDLK_d:
 	  xvel -= img_vel;
 	  break;
+	case SDLK_g:
+	  imagename="mario.png";
+	  loadMedia(gRenderer);
+	  attack1count=0;
+	  break;
+
 	}
 
     }
@@ -208,6 +283,7 @@ SDL_Texture* Mario::loadTexture( string path, SDL_Renderer* gRenderer ){
     if( newTexture == NULL ) {
       printf( "Unable to optimize image %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
     } else {
+      //get width and height of image
       mWidth = loadedTexture->w;
       mHeight =loadedTexture->h;
     }
@@ -221,9 +297,9 @@ SDL_Texture* Mario::loadTexture( string path, SDL_Renderer* gRenderer ){
 
 void Mario::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT ){
   move(SCREEN_WIDTH, SCREEN_HEIGHT);    
-  //  SDL_RenderClear( gRenderer );
   SDL_Rect renderQuad = { xpos, ypos-jump, mWidth, mHeight};
-	if(jump>0){
+  //calculate jump values to keep track of position while in the air
+          if(jump>0){
 	  jump=15+3*t-.1*t*t+jump2;
 	  t++;
 	  if (jump2>0){
@@ -231,8 +307,12 @@ void Mario::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGH
 	    t2++;
 	  }
         }
-   
-	SDL_RenderCopy( gRenderer, mTexture, NULL, &renderQuad);
+	
+	  if(attack1count>0){
+	    attack1count--;
+	  }
+	//render the image with appropriate flip and no rotation
+	SDL_RenderCopyEx( gRenderer, gImage, NULL, &renderQuad, 0, NULL, flip);
 	//Update the surface
         SDL_RenderPresent( gRenderer );
 
