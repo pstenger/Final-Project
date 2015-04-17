@@ -10,12 +10,19 @@ class Character{
   public:
     Character();
     //Loads media 
-    virtual bool loadMedia(SDL_Renderer*)=0;
+    virtual void loadMedia(SDL_Renderer*, string)=0;
     //Frees media and shuts down SDL
     virtual SDL_Texture* loadTexture( string path, SDL_Renderer*)=0;
     virtual void display (SDL_Renderer*, int , int)=0;
     virtual void handleevent(SDL_Event& e, SDL_Renderer*)=0;
     virtual void free()=0;
+    virtual int get_xpos()=0;
+    virtual int get_ypos()=0;
+    virtual int get_width()=0; 
+    virtual int get_height()=0; 
+    virtual SDL_Rect get_location(int)=0;
+    virtual int attacking()=0;  //returns true if character is attacking
+    virtual void damage(int)=0; 
  protected:
     //The window we'll be rendering to
     //SDL_Window* gWindow;

@@ -10,6 +10,7 @@ using namespace std;
 bool init();
 void close();
 void loadstage();
+
 SDL_Window* gWindow =NULL;
 SDL_Renderer* gRenderer=NULL;
 int SCREEN_WIDTH=640;
@@ -21,12 +22,18 @@ int main (){
   Character * character1= &mario1;
   Character * character2=&mario2;
   Background background;
+  SDL_Rect* intersection;
+  SDL_Rect rect1;
+  SDL_Rect rect2;
+  SDL_Rect rect1_hit;
+  SDL_Rect rect2_hit;
+
   //Start up SDL and create window
   
   init();
   background.Load("background.png",gRenderer);
-  character1->loadMedia(gRenderer);
-  character2->loadMedia(gRenderer);
+  //character1->loadMedia(gRenderer);
+  //character2->loadMedia(gRenderer);
   bool quit = false;
   SDL_Event e;
   while( !quit ){
@@ -39,10 +46,24 @@ int main (){
       character1->handleevent(e, gRenderer);
       character2->handleevent(e, gRenderer);
     }
-   
     background.render(SCREEN_WIDTH, SCREEN_HEIGHT, gRenderer);
     character1->display(gRenderer, SCREEN_WIDTH, SCREEN_HEIGHT); 
     character2->display(gRenderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+    rect1=character1->get_location(0);
+    rect2=character2->get_location(0);
+    rect1_hit=character1->get_location(1);
+    rect2_hit=character2->get_location(1);
+    if (character1->attacking()){
+      if(SDL_HasIntersection(&rect1_hit, &rect2)){
+	character2->damage(1);
+      }
+    }
+    if (character2->attacking()){
+      if(SDL_HasIntersection(&rect1, &rect2_hit)){
+        character1->damage(1);
+      }
+    }
+
     SDL_RenderClear(gRenderer);
   }
   background.free();
@@ -51,6 +72,7 @@ int main (){
   close();
   return 0;
 }
+
 
 bool init(){
   bool success = true;
