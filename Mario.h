@@ -41,13 +41,18 @@ class Mario: public Character {
   		string stand;;
   		string anim;
   		string attack1[5];
-  		string jumpanim; //jump animation
+  		string attack;
+		string jumpanim; //jump animation
   		string walk[8];
-  		int frame;
+  		string attack2[8];
+		int frame;
 		SDL_Rect location;  //character's body
 		SDL_Rect fist;  //character's fist
-  		bool buttonpress; //keeps track of whether button has been pressed
+  		bool buttonpress, buttonpress2; //keeps track of whether either attack button has been pressed
 		int health;
+		double time; //keeps track of in-game time
+		string damaged[4];  //damage animation
+		double hit; //knocks character into air if damaged
 };
 
 Mario::Mario (int player){
@@ -63,6 +68,7 @@ Mario::Mario (int player){
   	t=0;
   	t2=0;
   	jump2=0;
+	hit=0;
   	controls=player;
   	flip=SDL_FLIP_NONE;
   	frame=0;
@@ -82,7 +88,20 @@ Mario::Mario (int player){
   	walk[6]="mariowalk7.png";
   	walk[7]="mariowalk8.png";
 	health=0;
+	damaged[0]="mariodmg1.png";
+	damaged[1]="mariodmg2.png";
+	damaged[2]="mariodmg3.png";
+	damaged[3]="mariodmg4.png";   
+	attack2[0]="mariothrow1.png";
+	attack2[1]="mariothrow2.png";
+ 	attack2[2]="mariothrow3.png";
+ 	attack2[3]="mariothrow4.png";
+ 	attack2[4]="mariothrow5.png";
+ 	attack2[5]="mariothrow6.png";
+ 	attack2[6]="mariothrow7.png";
+ 	attack2[7]="mariothrow8.png";
   	buttonpress=0;
+	time=0;
 	if(player==1){
 	xpos=85;
         ypos=230;
@@ -117,7 +136,10 @@ void Mario::damage(int style){
     health=health+1;
   }
   cout<<health<<endl;
- 
+  anim="Damage";
+  hit=1; //allows to go into air when hit
+  
+  t=0;
 }
 int Mario::attacking(){
   if(buttonpress==1){
@@ -149,7 +171,7 @@ void Mario::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
         			case SDLK_DOWN:
 	  				break;
 				case SDLK_LEFT: 
-	  				if(!buttonpress){
+	  				if(!buttonpress || anim!="Damage"){
 	    					xvel -= img_vel; 
 	  				}
 	  				if(flip==SDL_FLIP_NONE){
@@ -160,7 +182,7 @@ void Mario::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
 	  				}
 	  				break;
 				case SDLK_RIGHT: 
-	  				if(!buttonpress){
+	  				if(!buttonpress || anim!="Damage"){
 	    					xvel += img_vel; 
 	  				}
 	  				if(flip==SDL_FLIP_HORIZONTAL){
@@ -172,11 +194,19 @@ void Mario::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
 	  				break;
         			case SDLK_COMMA:
 	  			        
-				       
-		       			anim="Attack1";
-	  		       		buttonpress=1;
-	 
+				        if(anim!="Damage" || !buttonpress2){
+		       			        anim="Attack1";
+	  		       	 	        buttonpress=1;
+
+				        }
 					break;
+				 case SDLK_PERIOD:
+					if(!buttonpress || anim!="Damage"){
+                                                anim="Throw";
+						buttonpress2=1;
+					}
+                                        break;
+
       				}
       		} else if( e.type == SDL_KEYUP && e.key.repeat == 0 ){ //if key was released
     
@@ -190,6 +220,7 @@ void Mario::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
 					if(jump<=0){
 	  					anim="Stand";
 					}
+					frame=0;
 					break;
       				case SDLK_RIGHT: 
         				if(xvel!=0){	
@@ -198,12 +229,18 @@ void Mario::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
 					if(jump<=0){
 	  					anim="Stand";
 					}
+					frame=0;
 					break;
       
       				case SDLK_COMMA:
 					buttonpress=0;
-	 			break;
-      			}
+	 				break;
+      				case SDLK_PERIOD:
+				        buttonpress2=0;
+                                     
+                                        break;
+
+			}
     		}
   	} else if (controls==2){  //if player 2
     		if( e.type == SDL_KEYDOWN && e.key.repeat == 0 ){
@@ -220,7 +257,7 @@ void Mario::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
 
 					break;
       				case SDLK_a:
-					if(!buttonpress){
+					if(!buttonpress || anim!="Damage"){
 	  					xvel -= img_vel;
 					}
         				if(flip==SDL_FLIP_NONE){ //change way facing appropriately
@@ -231,7 +268,7 @@ void Mario::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
 					}
 					break;
       				case SDLK_d:
-				        if(!buttonpress){
+				        if(!buttonpress || anim!="Damage"){
 	  					xvel += img_vel;
 					}
 					if(flip==SDL_FLIP_HORIZONTAL){
@@ -242,10 +279,18 @@ void Mario::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
         				}
 					break;
       				case SDLK_g:
-					anim="Attack1";
-					buttonpress=1;
+				  	if(anim!="Damage" || !buttonpress2){
+				        	anim="Attack1";
+						buttonpress=1;
+				       
+				  	}
 					break;
-
+				case SDLK_h:
+					if(!buttonpress || anim!="Damage"){
+						anim="Throw";
+						buttonpress2=1;
+					}
+					break;
       			}
     		} else if( e.type == SDL_KEYUP && e.key.repeat == 0 ){ //if key was released
 			switch( e.key.keysym.sym ){
@@ -258,6 +303,7 @@ void Mario::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
 	  				if(jump<=0){
             					anim="Stand";
           				}
+					frame=0;
 	  				break;
 				case SDLK_d:
 	  				if(xvel!=0){
@@ -266,10 +312,15 @@ void Mario::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
 	 				if(jump<=0){
 	    					anim="Stand";
 	  				}
+					frame=0;
 	  				break;
 				case SDLK_g:
 	  				buttonpress=0;
 	  				break;
+				case SDLK_h:
+				        buttonpress2=0;
+				     
+					break;
 			}
 
     		}
@@ -346,24 +397,28 @@ void Mario::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGH
 	location.w=mWidth-30;
 	location.h=mHeight-30;
 	if(flip==SDL_FLIP_NONE){
-	  fist.x=xpos+30;
-	  fist.y=ypos+20;
-	  fist.w=mWidth-40;
-	  fist.h=mHeight-40;
+	  	fist.x=xpos+30;
+	  	fist.y=ypos+20;
+	  	fist.w=mWidth-40;
+	  	fist.h=mHeight-40;
 	} else if(flip==SDL_FLIP_HORIZONTAL){
-	  fist.x=xpos+10;
-          fist.y=ypos+20;
-          fist.w=mWidth-40;
-          fist.h=mHeight-40;
+	  	fist.x=xpos+10;
+          	fist.y=ypos+20;
+          	fist.w=mWidth-40;
+          	fist.h=mHeight-40;
 	}
- 	SDL_Rect renderQuad = { xpos, ypos-jump, mWidth, mHeight};
+ 	SDL_Rect renderQuad = { xpos, ypos-jump-hit, mWidth, mHeight};
+
   //calculate jump values to keep track of position while in the air
    	if(jump>0){
      		t++;
-     		jump=7*t-.2*t*t;
+     		jump=7*t-.3*t*t;
+		if(jump<0){//if next step takes below 0
+		  jump=0;
+		}
    	} 
-  
-   	if(buttonpress==0 && frame==0 && jump==0 && anim!="Walk"){
+	//cout<<frame<<endl;
+   	if(buttonpress==0 && frame==0 && jump==0 && anim!="Walk" && anim!="Damage" && buttonpress2==0){
      		anim="Stand";
    	}
   
@@ -375,7 +430,22 @@ void Mario::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGH
       		if(frame>8){
     	  		frame=0;
       		}
-   	} else if (anim=="Walk"){
+	} else if(anim=="Damage"){
+		 loadMedia(gRenderer, damaged[frame/2]);
+		 if(frame==0 || frame%6!=0){//stop animation as mario is lieing down
+		   frame++;
+		 }
+		
+		t++; 
+		hit=3*t-.3*t*t;  //knock into air with damage
+		 
+		 if(hit<=0){//if hit goes below zero in an iteration
+		     hit=0;
+		     frame=0;
+		     anim="Stand";
+		 }
+	     
+	}else if (anim=="Walk"){
      		loadMedia(gRenderer, walk[frame/2]);
      		frame++;
      		if(frame>14){
@@ -383,8 +453,16 @@ void Mario::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGH
      		}
    	} else if (anim=="Jump"){
      		loadMedia(gRenderer, jumpanim);
-   	}
-	    
+   	} else if (anim=="Throw"){
+		 loadMedia(gRenderer, attack2[frame/2]);
+                frame++;
+                if(frame>14){
+                        frame=0;
+                }
+	}
+	time=time+.25;
+
+
 	//render the image with appropriate flip and no rotation
 	SDL_RenderCopyEx( gRenderer, gImage, NULL, &renderQuad, 0, NULL, flip);
 	//Update the surface
