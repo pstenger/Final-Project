@@ -4,8 +4,12 @@
 #include <SDL2/SDL_image.h>
 #include "Character.h"
 //#include "Link.h"
+#include "Projectile.h"
 #include "Mario.h"
 #include "Background.h"
+#include <vector>
+#include <string>
+#include <sstream>
 using namespace std;
 bool init();
 void close();
@@ -27,11 +31,18 @@ int main (){
   SDL_Rect rect2;
   SDL_Rect rect1_hit;
   SDL_Rect rect2_hit;
-
+  SDL_Rect rectproj;
+  int proj; //provides different names for objects
+  string projstring; //string version for naming
+  ostringstream ss; //for use converting string and int
+  vector<Projectile> range1;
+  vector<Projectile> range2;
+  vector<Projectile>::iterator iter;
   //Start up SDL and create window
   
   init();
   background.Load("background.png",gRenderer);
+  
   //character1->loadMedia(gRenderer);
   //character2->loadMedia(gRenderer);
   bool quit = false;
@@ -47,23 +58,61 @@ int main (){
       character2->handleevent(e, gRenderer);
     }
     background.render(SCREEN_WIDTH, SCREEN_HEIGHT, gRenderer);
-    character1->display(gRenderer, SCREEN_WIDTH, SCREEN_HEIGHT); 
-    character2->display(gRenderer, SCREEN_WIDTH, SCREEN_HEIGHT);
-    rect1=character1->get_location(0);
+    if(character1->display(gRenderer, SCREEN_WIDTH, SCREEN_HEIGHT)){
+      
+      ss<<proj;
+      projstring=ss.str();
+      Projectile projstring(character1->get_xpos(), character1->get_ypos(), character1->facing());
+      range1.push_back(projstring);
+      proj++;
+    }
+    if(character2->display(gRenderer, SCREEN_WIDTH, SCREEN_HEIGHT)){
+      
+      ss<<proj;
+      projstring=ss.str();
+      Projectile projstring(character2->get_xpos(), character2->get_ypos(), character2->facing());      
+      range2.push_back(projstring);
+      proj++;
+    }
+    rect1=character1->get_location(0); //character positions
     rect2=character2->get_location(0);
-    rect1_hit=character1->get_location(1);
+    rect1_hit=character1->get_location(1); //fist positions
     rect2_hit=character2->get_location(1);
-    if (character1->attacking()){
-      if(SDL_HasIntersection(&rect1_hit, &rect2)){
-	character2->damage(1);
+
+    for(iter=range1.begin(); iter!=range1.end(); iter++){
+      iter->Load("mariorange.png", gRenderer);
+      rectproj=iter->get_location();
+      if(SDL_HasIntersection(&rectproj, &rect2)){
+	character2->damage(2, character1->facing());
+	  
+      } else {
+	iter->render(SCREEN_WIDTH, SCREEN_HEIGHT, gRenderer);
+      }
+      iter->update();
+    }
+    for(iter=range2.begin(); iter!=range2.end(); iter++){
+      iter->Load("mariorange.png", gRenderer);	
+      rectproj=iter->get_location();
+	if(SDL_HasIntersection(&rectproj, &rect1)){
+	  character1->damage(2, character2->facing());
+	   
+	} else {
+	  iter->render(SCREEN_WIDTH, SCREEN_HEIGHT, gRenderer);
+	}
+	iter->update();
+    }
+
+    if (character1->attacking()==1){ //check for melee attack
+      if(SDL_HasIntersection(&rect1_hit, &rect2)){ //check for intersection
+	character2->damage(1, character1->facing()); //if intersection do damage
       }
     }
     if (character2->attacking()){
       if(SDL_HasIntersection(&rect1, &rect2_hit)){
-        character1->damage(1);
+        character1->damage(1, character2->facing());
       }
     }
-
+    
     SDL_RenderClear(gRenderer);
   }
   background.free();
