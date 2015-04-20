@@ -27,24 +27,20 @@ int main (){
   Character * character2=&mario2;
   Background background;
   SDL_Rect* intersection;
-  SDL_Rect rect1;
+  SDL_Rect rect1; //rectangles representing position of characters
   SDL_Rect rect2;
-  SDL_Rect rect1_hit;
+  SDL_Rect rect1_hit; //rectangle representing position of characters' fist (for attacks)
   SDL_Rect rect2_hit;
-  SDL_Rect rectproj;
+  SDL_Rect rectproj;  //rectangle of projectile
   int proj; //provides different names for objects
   string projstring; //string version for naming
   ostringstream ss; //for use converting string and int
-  vector<Projectile> range1;
+  vector<Projectile> range1;  //vectors for each players projectiles
   vector<Projectile> range2;
-  vector<Projectile>::iterator iter;
-  //Start up SDL and create window
+  vector<Projectile>::iterator iter; //iterator
   
-  init();
+  init(); //initialize window
   background.Load("background.png",gRenderer);
-  
-  //character1->loadMedia(gRenderer);
-  //character2->loadMedia(gRenderer);
   bool quit = false;
   SDL_Event e;
   while( !quit ){
@@ -54,19 +50,20 @@ int main (){
       if( e.type == SDL_QUIT ){
             quit = true;
       }
+      //check for key presses
       character1->handleevent(e, gRenderer);
       character2->handleevent(e, gRenderer);
     }
     background.render(SCREEN_WIDTH, SCREEN_HEIGHT, gRenderer);
-    if(character1->display(gRenderer, SCREEN_WIDTH, SCREEN_HEIGHT)){
+    if(character1->display(gRenderer, SCREEN_WIDTH, SCREEN_HEIGHT)){//display returns 1 if it reaches the end of the projectile launch animation
       
-      ss<<proj;
+      ss<<proj;//converting proj to string for use in dynamically naming objects
       projstring=ss.str();
       Projectile projstring(character1->get_xpos(), character1->get_ypos(), character1->facing());
-      range1.push_back(projstring);
-      proj++;
+      range1.push_back(projstring);   //puts new projectile object into vector with current x and y pos of character
+      proj++; //makes proj, and therefore next object name different
     }
-    if(character2->display(gRenderer, SCREEN_WIDTH, SCREEN_HEIGHT)){
+    if(character2->display(gRenderer, SCREEN_WIDTH, SCREEN_HEIGHT)){  //same as above but for player 2
       
       ss<<proj;
       projstring=ss.str();
@@ -79,18 +76,17 @@ int main (){
     rect1_hit=character1->get_location(1); //fist positions
     rect2_hit=character2->get_location(1);
 
-    for(iter=range1.begin(); iter!=range1.end(); iter++){
-      iter->Load("mariorange.png", gRenderer);
-      rectproj=iter->get_location();
+    for(iter=range1.begin(); iter!=range1.end(); iter++){  //iterates through projectile vectors, comparing to character location to determine if it is a hit
+      iter->Load("mariorange.png", gRenderer);  //displays projectile
+      rectproj=iter->get_location();  //sets rectangle of projectile for use in collision detection
       if(SDL_HasIntersection(&rectproj, &rect2)){
-	character2->damage(2, character1->facing());
-	  
+	character2->damage(2, character1->facing());    
       } else {
-	iter->render(SCREEN_WIDTH, SCREEN_HEIGHT, gRenderer);
+	iter->render(SCREEN_WIDTH, SCREEN_HEIGHT, gRenderer);  //renders projectile if it doesn't hit character
       }
-      iter->update();
+      iter->update();  //updates position of projectile
     }
-    for(iter=range2.begin(); iter!=range2.end(); iter++){
+    for(iter=range2.begin(); iter!=range2.end(); iter++){ //same as above for player 2
       iter->Load("mariorange.png", gRenderer);	
       rectproj=iter->get_location();
 	if(SDL_HasIntersection(&rectproj, &rect1)){
@@ -113,7 +109,7 @@ int main (){
       }
     }
     
-    SDL_RenderClear(gRenderer);
+    SDL_RenderClear(gRenderer); //clear renders for next loop
   }
   background.free();
   character1->free();
@@ -129,13 +125,14 @@ bool init(){
     cout<<"SDL could not initialize! SDL Error"<<SDL_GetError()<<"\n";
     success=false;
   } else {
+    //create window
     gWindow = SDL_CreateWindow( "Super Smash", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT , SDL_WINDOW_SHOWN );
     if( gWindow == NULL ){
       printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError());
       success=false;
     } else{
 
-    //Get window surface
+      //set gRenderer
       gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
       if( gRenderer == NULL ){
 	printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -155,12 +152,10 @@ bool init(){
 }
 }
 
-void close(){
+void close(){//close/destroy window/renderer 
   SDL_DestroyRenderer( gRenderer);
-  //Destroy window
   SDL_DestroyWindow( gWindow );
   gWindow=NULL;
   gRenderer= NULL;
-  //Quit SDL subsystems
   SDL_Quit();
 }
