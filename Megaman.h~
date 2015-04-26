@@ -1,6 +1,6 @@
 //This is the derived class for the character mario
-#ifndef MARIO_H
-#define MARIO_H
+#ifndef MEGAMAN_H
+#define MEGAMAN_H
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "Character.h"  //base class
@@ -8,10 +8,10 @@
 #include <iostream>
 using namespace std;
 
-class Mario: public Character {
+class Megaman: public Character {
 	public:
-  		Mario(int player);
-  		~Mario();
+  		Megaman(int player);
+  		~Megaman();
   		//Loads media
   		void loadMedia(SDL_Renderer*, string);
   		//called by LoadMedia to load specified texture
@@ -20,15 +20,14 @@ class Mario: public Character {
 		int attacking();  //returns true if character is attacking
 		void damage(int, string);  //applies appropriate damage
 		void win(SDL_Renderer*);
-                void lost(SDL_Renderer*);
-      
+		void lost(SDL_Renderer*);
         private:     
   		string stand; //variables represent file names for each animation/state
 		string crouch;
-  		string attack1[8]; 
+  		string attack1[6]; 
   		string attack;
 		string jumpanim; //jump animation
-  		string walk[8];
+  		string walk[10];
   		string attack2[8];
 		SDL_Rect location;  //character's body
 		SDL_Rect fist;  //character's fist
@@ -39,55 +38,62 @@ class Mario: public Character {
 	       
 };
 
-Mario::Mario (int player) : Character(player){
+Megaman::Megaman (int player) : Character(player){
      
 	range=0;
   	//initializes file variables to appropriate file names
-	stand="mario.png";
- 	attack1[1]="marioattack1_1.png";
-  	attack1[0]="marioattack1_2.png";
-  	attack1[2]="marioattack1_3.png";
-  	attack1[3]="marioattack1_4.png";
-  	attack1[4]="marioattack1_5.png";
-	attack1[5]="marioattack1_6.png";
-	attack1[6]="marioattack1_7.png";
-	attack1[7]="marioattack1_8.png";
-	attack1[8]="marioattack1_9.png";
-	attack1[9]="marioattack1_10.png";
-  	jumpanim="mariojump.png";
-  	walk[0]="mariowalk1.png";
-  	walk[1]="mariowalk2.png";
-  	walk[2]="mariowalk3.png";
-  	walk[3]="mariowalk4.png";
-  	walk[4]="mariowalk5.png";
-  	walk[5]="mariowalk6.png";
-  	walk[6]="mariowalk7.png";
-  	walk[7]="mariowalk8.png";
-	crouch="mariocrouch.png";
-	damaged[0]="mariodmg1.png";
-	damaged[1]="mariodmg2.png";
-	damaged[2]="mariodmg3.png";
-	damaged[3]="mariodmg4.png";   
-	damaged[4]="mariodmg5.png";
-	damaged[5]="mariodmg6.png";
-	damaged[6]="mariodmg7.png";
-	damaged[7]="mariodmg8.png";
-	attack2[0]="mariothrow1.png";
-	attack2[1]="mariothrow2.png";
- 	attack2[2]="mariothrow3.png";
- 	attack2[3]="mariothrow4.png";
- 	attack2[4]="mariothrow5.png";
- 	attack2[5]="mariothrow6.png";
- 	attack2[6]="mariothrow7.png";
- 	attack2[7]="mariothrow8.png";
+	stand="megaman.png";
+ 	attack1[1]="megamanattack1_1.png";
+  	attack1[0]="megamanattack1_2.png";
+  	attack1[2]="megamanattack1_3.png";
+  	attack1[3]="megamanattack1_4.png";
+  	attack1[4]="megamanattack1_5.png";
+	attack1[5]="megamanattack1_6.png";
+  	jumpanim="megamanjump.png";
+  	walk[0]="megamanwalk1.png";
+  	walk[1]="megamanwalk2.png";
+  	walk[2]="megamanwalk3.png";
+  	walk[3]="megamanwalk4.png";
+  	walk[4]="megamanwalk5.png";
+  	walk[5]="megamanwalk6.png";
+  	walk[6]="megamanwalk7.png";
+  	walk[7]="megamanwalk8.png";
+	walk[8]="megamanwalk9.png";
+	walk[9]="megamanwalk10.png";
+	crouch="megamancrouch.png";
+	damaged[0]="megamandmg1.png";
+	damaged[1]="megamandmg2.png";
+	damaged[2]="megamandmg3.png";
+	damaged[3]="megamandmg4.png";   
+	damaged[4]="megamandmg5.png";
+	damaged[5]="megamandmg6.png";
+	damaged[6]="megamandmg7.png";
+	damaged[7]="megamandmg8.png";
+	attack2[0]="megamanthrow1.png";
+	attack2[1]="megamanthrow2.png";
+ 	attack2[2]="megamanthrow3.png";
+ 	attack2[3]="megamanthrow4.png";
+ 	attack2[4]="megamanthrow5.png";
+ 	attack2[5]="megamanthrow6.png";
+ 	attack2[6]="megamanthrow7.png";
+ 	attack2[7]="megamanthrow8.png";
 	time=0;
+	if(player==1){  //sets beginning position of character (overrides base class default bc megaman sprite size different)
+          xpos=85;
+          ypos=200;
+        } else {
+          xpos=285;
+          ypos=200;
+          flip=SDL_FLIP_HORIZONTAL;
+        }
+
 }
 
-Mario::~Mario(){
+Megaman::~Megaman(){
   	free();
 }
 
-SDL_Rect Mario::get_location(int x){
+SDL_Rect Megaman::get_location(int x){
   if(x==0){ //if x is 0 use the rectangle if mario's body
     return (location);
   } else {
@@ -95,29 +101,28 @@ SDL_Rect Mario::get_location(int x){
   }
 }
 
-void Mario::loadMedia(SDL_Renderer* gRenderer, string filename){
+void Megaman::loadMedia(SDL_Renderer* gRenderer, string filename){
 
         gImage=loadTexture(filename, gRenderer); //call load texture with appropriate image name
   
 }
-void Mario::win(SDL_Renderer* gRenderer){
+void Megaman::win(SDL_Renderer* gRenderer){
   SDL_Rect renderQuad = { xpos, ypos, mWidth, mHeight};
-  loadMedia(gRenderer, "mariowin.png");
+  loadMedia(gRenderer, "megamanwin.png");
   SDL_RenderCopyEx( gRenderer, gImage, NULL, &renderQuad, 0, NULL, flip);
 }
-void Mario::lost(SDL_Renderer* gRenderer){
+void Megaman::lost(SDL_Renderer* gRenderer){
   SDL_Rect renderQuad = { xpos, ypos, mWidth, mHeight};
-  loadMedia(gRenderer, "mariolost.png");
+  loadMedia(gRenderer, "megamanlost.png");
   SDL_RenderCopyEx( gRenderer, gImage, NULL, &renderQuad, 0, NULL, flip);
 }
 
-
-int Mario::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT ){
+int Megaman::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT ){
   move(SCREEN_WIDTH, SCREEN_HEIGHT);    //update x and y positions
-  location.x=xpos+20;// set hit box for character
+  location.x=xpos+30;// set hit box for character
   location.y=ypos+20;
-  location.w=mWidth-30;
-  location.h=mHeight-30;
+  location.w=mWidth-40;
+  location.h=mHeight-60;
   if(flip==SDL_FLIP_NONE){//set hitbox for fist. dependent on the way character is facing
     fist.x=xpos+30;
     fist.y=ypos+20;
@@ -133,7 +138,7 @@ int Mario::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT
 
   //calculate jump values to keep track of position while in the air
   if(jump>0 && anim!="Damage"){
-    if(!buttonpress && !buttonpress2){//once attack animations stop
+    if(!buttonpress && !buttonpress2 && anim!="Respawn"){//once attack animations stop
       anim="Jump";
     }
     t++;
@@ -149,19 +154,18 @@ int Mario::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT
   if (anim=="Stand"){
     loadMedia(gRenderer, stand);
   } else if(anim=="Attack1"){
-    if(frame>18){
+    if(frame>10){
       frame=0;
       buttonpress=0;
     }
-
     loadMedia(gRenderer, attack1[frame/2]);
     frame++;
   } else if(anim=="Damage"){
-    if(frame>4){
+    if(frame>2){
       frame=0;
     }
     loadMedia(gRenderer, damaged[frame/2]);
-    if(frame==0 || frame%4!=0){//stop animation as mario is lieing down
+    if(frame==0 || frame%2!=0){//stop animation as mario is lieing down
       frame++;
     }
 
@@ -177,25 +181,28 @@ int Mario::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT
   } else if(anim=="Crouch"){
     loadMedia(gRenderer, crouch);
   }else if (anim=="Walk"){
-    if(frame>14){
+    if(frame>18){
       frame=0;
-    }
-
+    }    
     loadMedia(gRenderer, walk[frame/2]);
+    
     frame++;
+    
   } else if (anim=="Jump"){
     loadMedia(gRenderer, jumpanim);
   } else if (anim=="Throw"){
+    if(frame==8){
+      range=1;
+    }
     if(frame>14){
       frame=0;
-      range=1;  //end of animation so projectile launched
       buttonpress2=0; //notifies key presses that other actions can now happen
     }
- 
-   loadMedia(gRenderer, attack2[frame/2]);
+    loadMedia(gRenderer, attack2[frame/2]);
     frame++;
+
   } else if(anim=="Respawn"){
-    ypos=230;
+    ypos=200;
     xpos=320;
     health=0;
     t++;

@@ -8,50 +8,56 @@
 using namespace std;
 //Texture wrapper class
 class Projectile{
- public:
-  //Initializes variables
-  Projectile(int xcord=0, int ycord=0, string facing="right");
+ 	public:
+  	//Initializes variables
+  		Projectile(int xcord=0, int ycord=0, string facing="right", string character="Mario");
 
-//Deallocates memory
-  ~Projectile();
-//Loads image at specified path
-  void Load( string path, SDL_Renderer* );
+		//Deallocates memory
+  		~Projectile();
+		//Loads image at specified path
+  		void Load( string path, SDL_Renderer* );
 
-//Deallocates texture
-  void free();
+		//Deallocates texture
+  		void free();
 
-//Renders texture at given point
-  void render( int x, int y, SDL_Renderer* );
+		//Renders texture at given point
+  		void render( int x, int y, SDL_Renderer* );
 
-//Gets image dimensions
-  int getWidth();
-  int getHeight();
-  SDL_Rect get_location();
-  void update(); //update xpos
- private:
-//The actual hardware texture
-  SDL_Texture* mTexture;
-  int xpos;
-  int ypos;
-//Image dimensions
-  int mWidth;
-  int mHeight;
-  string direction;
-  SDL_Rect location;
+		//Gets image dimensions
+  		int getWidth();
+  		int getHeight();
+  		SDL_Rect get_location();
+  		void update(); //update xpos
+ 	private:
+		//The actual hardware texture
+  		SDL_Texture* mTexture;
+  		int xpos;
+  		int ypos;
+		//Image dimensions
+  		int mWidth;
+  		int mHeight;
+  		string direction;
+  		SDL_Rect location;
+  		SDL_RendererFlip flip; //whether or not to flip way projectile points
 };
 
-Projectile::Projectile(int xcord, int ycord, string facing)
+Projectile::Projectile(int xcord, int ycord, string facing, string character)
 {
 	//Initialize
 	mTexture = NULL;
 	mWidth = 0;
 	mHeight = 0;
+	if(character=="Megaman"){
+	  ypos=ycord-10;
+	} else {
+	  ypos=ycord+25;
+	}
 	if(facing=="right"){
 	  xpos=xcord+50;
-	  ypos=ycord+25;
+	  flip=SDL_FLIP_NONE;
 	} else {
 	  xpos=xcord;
-	  ypos=ycord+25;
+	  flip=SDL_FLIP_HORIZONTAL;
 	}
 	direction=facing;
 }
@@ -62,7 +68,7 @@ Projectile::~Projectile()
 }
 
 SDL_Rect Projectile::get_location(){
-  return (location);
+  	return (location);
 }
 void Projectile::Load(string path, SDL_Renderer* gRenderer)
 {
@@ -100,7 +106,7 @@ void Projectile::Load(string path, SDL_Renderer* gRenderer)
 
 	//Return success
 	mTexture=newTexture;
-	
+       
 }
 
 void Projectile::free()
@@ -116,17 +122,17 @@ void Projectile::free()
 }
 
 void Projectile::render(int SCREEN_WIDTH, int SCREEN_HEIGHT, SDL_Renderer* gRenderer){
-  //SDL_RenderClear(gRenderer);
-  if(xpos>640 || xpos<0 || ypos>480 || ypos<0){
-    free();
-  }
-  SDL_Rect renderQuad;
-  renderQuad.x=xpos;
-  renderQuad.y=ypos;
-  renderQuad.w=mWidth;
-  renderQuad.h=mHeight;
-  SDL_RenderCopy(gRenderer, mTexture, NULL, &renderQuad);
-  SDL_RenderPresent(gRenderer);
+  	//SDL_RenderClear(gRenderer);
+  	if(xpos>640 || xpos<0 || ypos>480 || ypos<0){
+    		free();
+  	}
+  	SDL_Rect renderQuad;
+  	renderQuad.x=xpos;
+  	renderQuad.y=ypos;
+  	renderQuad.w=mWidth;
+  	renderQuad.h=mHeight;
+  	SDL_RenderCopyEx( gRenderer, mTexture, NULL, &renderQuad, 0, NULL, flip);
+  	SDL_RenderPresent(gRenderer);
 }
 int Projectile::getWidth()
 {
@@ -135,17 +141,22 @@ int Projectile::getWidth()
 
 int Projectile::getHeight()
 {
-  return mHeight;
+  	return mHeight;
 }
 void Projectile::update(){
-  if(direction=="left"){
-    xpos=xpos-10;
-  } else if (direction=="right"){
-    xpos=xpos+10;
-  }
-  location.x=xpos;
-  location.y=ypos;
-  location.w=mWidth;
-  location.h=mHeight;
+  	if(direction=="left"){
+    		xpos=xpos-15;
+    
+  	} else if (direction=="right"){
+    		xpos=xpos+15;
+  
+  	}
+	
+  	location.x=xpos;
+  	location.y=ypos+35;
+  	location.w=mWidth;
+  	location.h=10;
+	//cout<<location.y<<endl;
+	//cout<<location.h<<endl;
 }
 #endif
