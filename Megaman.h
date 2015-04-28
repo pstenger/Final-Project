@@ -78,13 +78,14 @@ Megaman::Megaman (int player) : Character(player){
  	attack2[6]="megamanthrow7.png";
  	attack2[7]="megamanthrow8.png";
 	time=0;
-	if(player==1){  //sets beginning position of character (overrides base class default bc megaman sprite size different)
-          xpos=85;
+	if(player==2){  //sets beginning position of character (overrides base class default bc megaman sprite size different)
+          xpos=90;
           ypos=200;
+      
         } else {
-          xpos=285;
+          xpos=400;
           ypos=200;
-          flip=SDL_FLIP_HORIZONTAL;
+	  flip=SDL_FLIP_HORIZONTAL;
         }
 
 }
@@ -120,17 +121,17 @@ void Megaman::lost(SDL_Renderer* gRenderer){
 int Megaman::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT ){
   move(SCREEN_WIDTH, SCREEN_HEIGHT);    //update x and y positions
   location.x=xpos+30;// set hit box for character
-  location.y=ypos+20;
+  location.y=ypos+30-jump;
   location.w=mWidth-40;
-  location.h=mHeight-60;
+  location.h=mHeight-30;
   if(flip==SDL_FLIP_NONE){//set hitbox for fist. dependent on the way character is facing
     fist.x=xpos+30;
-    fist.y=ypos+20;
+    fist.y=ypos+20-jump;
     fist.w=mWidth-40;
     fist.h=mHeight-40;
   } else if(flip==SDL_FLIP_HORIZONTAL){
     fist.x=xpos+10;
-    fist.y=ypos+20;
+    fist.y=ypos+20-jump;
     fist.w=mWidth-40;
     fist.h=mHeight-20;
   }
@@ -147,7 +148,7 @@ int Megaman::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIG
       jump=0;
     }
   }
-
+  
   if(buttonpress==0 && jump==0 && anim!="Walk" && anim!="Damage" && buttonpress2==0 && anim!="Crouch" && anim!="Respawn"){
     anim="Stand"; //default state
   }
@@ -176,6 +177,7 @@ int Megaman::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIG
       xvel=0;
       frame=0;
       anim="Stand";
+      jump=0;
       t=0;
     }
   } else if(anim=="Crouch"){

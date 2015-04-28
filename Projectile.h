@@ -37,7 +37,8 @@ class Projectile{
   		int mWidth;
   		int mHeight;
   		string direction;
-  		SDL_Rect location;
+  		string fighter;
+		SDL_Rect location;
   		SDL_RendererFlip flip; //whether or not to flip way projectile points
 };
 
@@ -47,8 +48,9 @@ Projectile::Projectile(int xcord, int ycord, string facing, string character)
 	mTexture = NULL;
 	mWidth = 0;
 	mHeight = 0;
-	if(character=="Megaman"){
-	  ypos=ycord-10;
+	fighter=character;
+	if(character=="Megaman" || character=="Link"){
+	  ypos=ycord+30;
 	} else {
 	  ypos=ycord+25;
 	}
@@ -98,6 +100,7 @@ void Projectile::Load(string path, SDL_Renderer* gRenderer)
 			//Get image dimensions
 			mWidth = loadedSurface->w;
 			mHeight = loadedSurface->h;
+
 		}
 
 		//Get rid of old loaded surface
@@ -151,11 +154,11 @@ void Projectile::update(){
     		xpos=xpos+15;
   
   	}
-	
+      
   	location.x=xpos;
-  	location.y=ypos+35;
+  	location.y=ypos;
   	location.w=mWidth;
-  	location.h=10;
+  	location.h=mHeight;
 	//cout<<location.y<<endl;
 	//cout<<location.h<<endl;
 }

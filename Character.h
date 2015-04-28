@@ -72,13 +72,13 @@ Character::Character (int player) : controls(player){
   	frame=0;
   	buttonpress=0;
   	buttonpress2=0;
-  	if(player==1){  //sets beginning position of character
-    		xpos=85;
+  	if(player==2){  //sets beginning position of character
+    		xpos=90;
     		ypos=230;
   	} else {
-    		xpos=285;
+    		xpos=485;
     		ypos=230;
-    		flip=SDL_FLIP_HORIZONTAL;
+		flip=SDL_FLIP_HORIZONTAL;  	      
   	}
 
 }

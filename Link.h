@@ -79,11 +79,11 @@ Link::Link (int player) : Character(player){
  	attack2[6]="linkthrow7.png";
  	attack2[7]="linkthrow8.png";
 	time=0;
-      	if(player==1){  //sets beginning position of character (overrides base class default bc link sprite size different)
-	  xpos=85;
+      	if(player==2){  //sets beginning position of character (overrides base class default bc link sprite size different)
+	  xpos=90;
 	  ypos=200;
 	} else {
-	  xpos=285;
+	  xpos=400;
 	  ypos=200;
 	  flip=SDL_FLIP_HORIZONTAL;
 	}
@@ -125,17 +125,17 @@ void Link::lost(SDL_Renderer* gRenderer){
 int Link::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT ){
   move(SCREEN_WIDTH, SCREEN_HEIGHT);    //update x and y positions
   location.x=xpos+20;// set hit box for character
-  location.y=ypos+20;
+  location.y=ypos+20-jump;
   location.w=mWidth-30;
   location.h=mHeight-30;
   if(flip==SDL_FLIP_NONE){//set hitbox for fist. dependent on the way character is facing
     fist.x=xpos+30;
-    fist.y=ypos+20;
+    fist.y=ypos+20-jump;
     fist.w=mWidth-40;
     fist.h=mHeight-40;
   } else if(flip==SDL_FLIP_HORIZONTAL){
     fist.x=xpos+10;
-    fist.y=ypos+20;
+    fist.y=ypos+20-jump;
     fist.w=mWidth-40;
     fist.h=mHeight-40;
   }
@@ -152,7 +152,7 @@ int Link::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT 
 		  jump=0;
 		}
  	} 
-	
+     
  	if(buttonpress==0 && jump==0 && anim!="Walk" && anim!="Damage" && buttonpress2==0 && anim!="Crouch" && anim!="Respawn"){
 	        anim="Stand"; //default state 
  	}  
@@ -185,6 +185,7 @@ int Link::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT 
 		     frame=0;
 		     anim="Stand";
 		     t=0;
+		     jump=0;
 		 }	     
 	} else if(anim=="Crouch"){
 	        loadMedia(gRenderer, crouch);

@@ -63,6 +63,10 @@ int main (){
   int health1H=0;
   int health2W=0;
   int health2H=0;
+  SDL_QueryTexture(health1tex, NULL, NULL, &health1W, &health1H);
+  SDL_QueryTexture(health2tex, NULL, NULL, &health2W, &health2H);
+  SDL_Rect health1rect={100, 400, health1W, health1H};
+  SDL_Rect health2rect={540, 400, health2W, health2H};
   SDL_Surface* end1surf=TTF_RenderText_Solid(font, "Player 2 Wins", color3);
   SDL_Texture* end1tex=SDL_CreateTextureFromSurface(gRenderer, end1surf);
   SDL_QueryTexture(end1tex, NULL, NULL, &health1W, &health1H);
@@ -71,10 +75,6 @@ int main (){
   SDL_Texture* end2tex=SDL_CreateTextureFromSurface(gRenderer, end2surf);
   SDL_QueryTexture(end2tex, NULL, NULL, &health1W, &health1H);
   SDL_Rect end2rect={170, 240, 0, 0};
-  SDL_QueryTexture(health1tex, NULL, NULL, &health1W, &health1H);
-  SDL_QueryTexture(health2tex, NULL, NULL, &health2W, &health2H);
-  SDL_Rect health1rect={100, 400, health1W, health1H};
-  SDL_Rect health2rect={540, 400, health2W, health2H};
   while( !quit ){
         //Handle events on queue
     while( SDL_PollEvent( &e ) != 0 ){
@@ -93,13 +93,12 @@ int main (){
       character2->win(gRenderer);
       SDL_RenderCopy(gRenderer, end1tex, NULL, &end1rect);
       SDL_RenderPresent(gRenderer);
-      SDL_RenderClear(gRenderer); //clear renders for next loop
+
     } else if (character2->dead()){
       character2->lost(gRenderer);
       character1->win(gRenderer);
       SDL_RenderCopy(gRenderer, end2tex, NULL, &end2rect);
       SDL_RenderPresent(gRenderer);
-      SDL_RenderClear(gRenderer); //clear renders for next loop
     } else {
       if(character1->display(gRenderer, SCREEN_WIDTH, SCREEN_HEIGHT)){//display returns 1 if it reaches the end of the projectile launch animation
       
@@ -108,7 +107,6 @@ int main (){
 	ss.clear();
 	ss.str("");
 	Projectile projstring(character1->get_xpos(), character1->get_ypos(), character1->facing(), "Megaman");
-	//projstring.Load(char1, gRenderer);
 	range1.push_back(projstring);   //puts new projectile object into vector with current x and y pos of character
 	proj++; //makes proj, and therefore next object name different
       }
@@ -121,7 +119,6 @@ int main (){
 	ss.clear();
 	ss.str("");
 	Projectile projstring(character2->get_xpos(), character2->get_ypos(), character2->facing(), "Link");      
-	//projstring.Load(char2, gRenderer);
 	range2.push_back(projstring);
 	proj++;
       }

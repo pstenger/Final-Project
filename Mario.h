@@ -115,17 +115,17 @@ void Mario::lost(SDL_Renderer* gRenderer){
 int Mario::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT ){
   move(SCREEN_WIDTH, SCREEN_HEIGHT);    //update x and y positions
   location.x=xpos+20;// set hit box for character
-  location.y=ypos+20;
+  location.y=ypos+20-jump;
   location.w=mWidth-30;
   location.h=mHeight-30;
   if(flip==SDL_FLIP_NONE){//set hitbox for fist. dependent on the way character is facing
     fist.x=xpos+30;
-    fist.y=ypos+20;
+    fist.y=ypos+20-jump;
     fist.w=mWidth-40;
     fist.h=mHeight-40;
   } else if(flip==SDL_FLIP_HORIZONTAL){
     fist.x=xpos+10;
-    fist.y=ypos+20;
+    fist.y=ypos+20-jump;
     fist.w=mWidth-40;
     fist.h=mHeight-40;
   }
@@ -173,6 +173,7 @@ int Mario::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT
       frame=0;
       anim="Stand";
       t=0;
+      jump=0;
     }
   } else if(anim=="Crouch"){
     loadMedia(gRenderer, crouch);
