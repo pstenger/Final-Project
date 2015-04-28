@@ -12,6 +12,7 @@
 #include <string>
 #include <sstream>
 #include <SDL2/SDL_ttf.h>
+#include "Pac.h"
 using namespace std;
 bool init();
 void close();
@@ -22,7 +23,7 @@ int SCREEN_WIDTH=640;
 int SCREEN_HEIGHT=480;
 SDL_Texture* background;
 int main (){ 
-  Megaman megaman(1);
+  Pac megaman(1);
   Link link1(2);
   Character * character1= &megaman;
   Character * character2=&link1;
@@ -41,7 +42,7 @@ int main (){
   vector<Projectile> range1;  //vectors for each players projectiles
   vector<Projectile> range2;
   vector<Projectile>::iterator iter; //iterator
-  string char1="megamanrange.png"; //for determinng the file type for projectile
+  string char1="pacrange.png"; //for determinng the file type for projectile
   string char2="linkrange.png";
   init(); //initialize window
   background.Load("background.png",gRenderer);
@@ -106,7 +107,7 @@ int main (){
 	projstring=ss.str();
 	ss.clear();
 	ss.str("");
-	Projectile projstring(character1->get_xpos(), character1->get_ypos(), character1->facing(), "Megaman");
+	Projectile projstring(character1->get_xpos(), character1->get_ypos(), character1->facing(), "Pacman");
 	range1.push_back(projstring);   //puts new projectile object into vector with current x and y pos of character
 	proj++; //makes proj, and therefore next object name different
       }

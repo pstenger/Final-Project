@@ -49,7 +49,7 @@ Projectile::Projectile(int xcord, int ycord, string facing, string character)
 	mWidth = 0;
 	mHeight = 0;
 	fighter=character;
-	if(character=="Megaman" || character=="Link"){
+	if(character=="Megaman" || character=="Link" || character=="Pacman"){
 	  ypos=ycord+30;
 	} else {
 	  ypos=ycord+25;
