@@ -36,8 +36,7 @@ class Projectile{
 		//Image dimensions
   		int mWidth;
   		int mHeight;
-  		string direction;
-  		string fighter;
+  		string direction; //direction character is facing
 		SDL_Rect location;
   		SDL_RendererFlip flip; //whether or not to flip way projectile points
 };
@@ -48,13 +47,12 @@ Projectile::Projectile(int xcord, int ycord, string facing, string character)
 	mTexture = NULL;
 	mWidth = 0;
 	mHeight = 0;
-	fighter=character;
-	if(character=="Megaman" || character=="Link" || character=="Pacman"){
+	if(character=="Megaman" || character=="Link" || character=="Pacman"){ //have different image sizes so different offsets
 	  ypos=ycord+30;
 	} else {
 	  ypos=ycord+25;
 	}
-	if(facing=="right"){
+	if(facing=="right"){  
 	  xpos=xcord+50;
 	  flip=SDL_FLIP_NONE;
 	} else {
@@ -126,11 +124,11 @@ void Projectile::free()
 
 void Projectile::render(int SCREEN_WIDTH, int SCREEN_HEIGHT, SDL_Renderer* gRenderer){
   	//SDL_RenderClear(gRenderer);
-  	if(xpos>640 || xpos<0 || ypos>480 || ypos<0){
+  if(xpos>640 || xpos<0 || ypos>480 || ypos<0){ //free if leaves screen
     		free();
   	}
   	SDL_Rect renderQuad;
-  	renderQuad.x=xpos;
+  	renderQuad.x=xpos;  
   	renderQuad.y=ypos;
   	renderQuad.w=mWidth;
   	renderQuad.h=mHeight;
@@ -147,8 +145,8 @@ int Projectile::getHeight()
   	return mHeight;
 }
 void Projectile::update(){
-  	if(direction=="left"){
-    		xpos=xpos-15;
+        if(direction=="left"){//velocity
+	        xpos=xpos-15;
     
   	} else if (direction=="right"){
     		xpos=xpos+15;
@@ -159,7 +157,5 @@ void Projectile::update(){
   	location.y=ypos;
   	location.w=mWidth;
   	location.h=mHeight;
-	//cout<<location.y<<endl;
-	//cout<<location.h<<endl;
 }
 #endif

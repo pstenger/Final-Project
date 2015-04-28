@@ -21,7 +21,7 @@ class Character{
     		void handleevent(SDL_Event& e, SDL_Renderer*);
     		void free();
     		int get_xpos();
-    		int get_ypos();
+		int get_ypos();
     		int get_width(); 
     		int get_height(); 
     		virtual SDL_Rect get_location(int)=0;
@@ -87,11 +87,11 @@ int Character::gethealth(){
         return health;
 }
 int Character::dead(){
-  if(lives<=0){
-    return 1;
-  } else {
-    return 0;
-  }
+  	if(lives<=0){
+    		return 1;
+  	} else {
+    		return 0;
+  	}
 }
  
 void Character::damage(int style, string direction){ //style takes in type of attack and direction takes in which direction attack is from
@@ -101,7 +101,7 @@ void Character::damage(int style, string direction){ //style takes in type of at
     		} else if (style==2){ //ranged
       			health=health+2;
     		}
-    		if(direction=="left"){
+    		if(direction=="left"){//move increasing distances for damage
       			if(health>75){
         			xvel=-7;
       			} else if (xvel>150){
@@ -185,14 +185,14 @@ void Character::move(int SCREEN_WIDTH, int SCREEN_HEIGHT){
 
   //If it went too far to the left or right
   if( ( xpos < 85 ) || ( xpos+mWidth > SCREEN_WIDTH-85 ) ){
-    ypos +=4;
+    	ypos +=4;
   }
   if(ypos>480){
-    lives--;
-    t=0;
-    anim="Respawn";
-    frame=0;
-    xvel=0;
+    	lives--;
+    	t=0;
+    	anim="Respawn";
+    	frame=0;
+    	xvel=0;
   }
 }
 
@@ -204,11 +204,11 @@ void Character::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
       switch( e.key.keysym.sym ){
       case SDLK_UP:
 	if(!buttonpress && !buttonpress2){ //attack animations should continue while jumping
-	  anim="Jump";
+	  	anim="Jump";
 	}
 	if(jump==0){//can't jump if already in the air. jump is added to ypos
-	  jump=1; //allows jump later in program
-	  t=0; //resets t
+	  	jump=1; //allows jump later in program
+	  	t=0; //resets t
 	}
 	break;
       case SDLK_DOWN:
@@ -216,37 +216,37 @@ void Character::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
 	break;
       case SDLK_LEFT:
 	if(!buttonpress && anim!="Damage"){ //can't move out of damage animation or attack animation
-	  xvel -= img_vel;
+	  	xvel -= img_vel;
 	}
 	if(flip==SDL_FLIP_NONE){
-	  flip=SDL_FLIP_HORIZONTAL; //change direction character is facing
+	  	flip=SDL_FLIP_HORIZONTAL; //change direction character is facing
 	}
 	if(jump<=0 && !buttonpress && anim!="Damage" && !buttonpress2){
-	  anim="Walk";  //walk animation if not in air
+	  	anim="Walk";  //walk animation if not in air
 	}
 	break;
       case SDLK_RIGHT:
 	if(!buttonpress && anim!="Damage"){
-	  xvel += img_vel;
+	  	xvel += img_vel;
 	}
 	if(flip==SDL_FLIP_HORIZONTAL){
-	  flip=SDL_FLIP_NONE;
+	  	flip=SDL_FLIP_NONE;
 	}
 	if(jump<=0 && !buttonpress && anim!="Damage" && !buttonpress2 ){
-	  anim="Walk";
+	  	anim="Walk";
 	}
 	break;
       case SDLK_COMMA:
 
 	if(anim!="Damage" && !buttonpress2){  //can't interrupt ranged attack or damage animation
-	  anim="Attack1";
-	  buttonpress=1;
+	  	anim="Attack1";
+	  	buttonpress=1;
 	}
 	break;
       case SDLK_PERIOD:
 	if(!buttonpress && anim!="Damage"){
-	  anim="Throw";
-	  buttonpress2=1;
+	  	anim="Throw";
+	  	buttonpress2=1;
 	}
 	break;
 
@@ -260,27 +260,20 @@ void Character::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
       case SDLK_LEFT:
 	if(xvel!=0 && flip==SDL_FLIP_HORIZONTAL){  //if key pressed but in the middle of animation, don't want to decre\
 ase xvel bc it is already 0
-  xvel += img_vel;
+  		xvel += img_vel;
 	}
 	if(jump<=0 && anim!="Damage" && anim!="Throw" && anim!="Attack1"){  //if on ground
-	  anim="Stand";
+	  	anim="Stand";
 	}
 
 	break;
       case SDLK_RIGHT:
 	if(xvel!=0 && flip==SDL_FLIP_NONE){
-	  xvel -= img_vel;
+	  	xvel -= img_vel;
 	}
 	if(jump<=0 && anim!="Damage" && anim!="Throw" && anim!="Attack1"){
-	  anim="Stand";
+	  	anim="Stand";
 	}
-
-	break;
-
-      case SDLK_COMMA:
-
-	break;
-      case SDLK_PERIOD:
 
 	break;
       }
@@ -291,11 +284,11 @@ ase xvel bc it is already 0
       switch( e.key.keysym.sym ){
       case SDLK_w:
 	if(!buttonpress && !buttonpress2){
-	  anim="Jump";
+	  	anim="Jump";
 	}
 	if(jump==0){
-	  jump=1;
-	  t=0;
+	  	jump=1;
+	  	t=0;
 	}
 	break;
       case SDLK_s:
@@ -303,37 +296,37 @@ ase xvel bc it is already 0
 	break;
       case SDLK_a:
 	if(!buttonpress && anim!="Damage"){
-	  xvel -= img_vel;
+	  	xvel -= img_vel;
 	}
 	if(flip==SDL_FLIP_NONE){ //change way facing appropriately
-	  flip=SDL_FLIP_HORIZONTAL;
+	  	flip=SDL_FLIP_HORIZONTAL;
 	}
 	if(jump<=0 && !buttonpress && anim!="Damage" && !buttonpress2){
-	  anim="Walk";
+	  	anim="Walk";
 	}
 	break;
       case SDLK_d:
 	if(!buttonpress && anim!="Damage"){
-	  xvel += img_vel;
+	  	xvel += img_vel;
 	}
 	if(flip==SDL_FLIP_HORIZONTAL){
-	  flip=SDL_FLIP_NONE;
+	  	flip=SDL_FLIP_NONE;
 	}
 	if(jump<=0 && !buttonpress && anim!="Damage" && !buttonpress2){
-	  anim="Walk";
+	  	anim="Walk";
 	}
 	break;
       case SDLK_g:
 	if(anim!="Damage" && !buttonpress2){
-	  anim="Attack1";
-	  buttonpress=1;
+	  	anim="Attack1";
+	  	buttonpress=1;
 
 	}
 	break;
       case SDLK_h:
 	if(!buttonpress && anim!="Damage"){
-	  anim="Throw";
-	  buttonpress2=1;
+	  	anim="Throw";
+	  	buttonpress2=1;
 	}
 	break;
       }
@@ -344,25 +337,21 @@ ase xvel bc it is already 0
 	break;
       case SDLK_a:
 	if(xvel!=0 && flip==SDL_FLIP_HORIZONTAL){
-	  xvel += img_vel;
+	  	xvel += img_vel;
 	}
 	if(jump<=0 && anim!="Damage" && anim!="Throw" && anim!="Attack1"){
-	  anim="Stand";
+	  	anim="Stand";
 	}
 
 	break;
       case SDLK_d:
 	if(xvel!=0 && flip==SDL_FLIP_NONE){
-	  xvel -= img_vel;
+	  	xvel -= img_vel;
 	}
 	if(jump<=0 && anim!="Damage" && anim!="Throw" && anim!="Attack1"){
-	  anim="Stand";
+	  	anim="Stand";
 	}
 
-	break;
-      case SDLK_g:
-	break;
-      case SDLK_h:
 	break;
       }
 
@@ -371,26 +360,25 @@ ase xvel bc it is already 0
 }
 
 int Character::get_width(){
-  return(mWidth);
+  	return(mWidth);
 }
 int Character::get_height(){
-  return(mHeight);
+  	return(mHeight);
 }
 
 int Character::get_xpos(){
-  return(xpos);
+  	return(xpos);
 }
-
 int Character::get_ypos(){
-  return(ypos);
+  return(ypos-jump);
 }
 
-string Character::facing(){
-  if (flip==SDL_FLIP_NONE){
-    return("right");
-  } else {
-    return("left");
-  }
+string Character::facing(){//which way image is facing
+  	if (flip==SDL_FLIP_NONE){
+    		return("right");
+ 	} else {
+    		return("left");
+  	}
 }
 
 #endif

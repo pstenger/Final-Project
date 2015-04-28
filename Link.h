@@ -161,7 +161,7 @@ int Link::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT 
   	} else if(anim=="Attack1"){
     	  if(frame>18){
 	    	frame=0;
-	    	buttonpress=0;
+	    	buttonpress=0; //next loop will be new animation
 	  }
 	
 	  loadMedia(gRenderer, attack1[frame/2]);
@@ -181,7 +181,7 @@ int Link::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT 
 		hity=3*t-.3*t*t;  //knock into air with damage
 		 if(hity<=0){//if hit goes below zero in an iteration
 		     	hity=0;
-		     	xvel=0;
+		     	xvel=0; //reset values
 		     	frame=0;
 		     	anim="Stand";
 		     	t=0;
@@ -211,24 +211,24 @@ int Link::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT 
 		xpos=320;
 		health=0;
 		t++;
-              	jump=150-.3*t*t;
+              	jump=150-.3*t*t; //respawn in air
               	if(jump<0){//if next step takes below 0
                 	jump=0;
 		  	anim="Stand";
 	       	}
 	}
-	time=time+.25;
+
 
 
 	//render the image with appropriate flip and no rotation
 	SDL_RenderCopyEx( gRenderer, gImage, NULL, &renderQuad, 0, NULL, flip);
 	//Update the surface
 	SDL_RenderPresent( gRenderer );
-if(range){
-	  range=0;
-	  return 1;
+	if(range){
+	  	range=0;
+	  	return 1;
 	} else {
-	  return 0;
+	  	return 0;
 	}
 	 
 }

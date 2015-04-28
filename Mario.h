@@ -149,9 +149,9 @@ int Mario::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT
   if (anim=="Stand"){
     loadMedia(gRenderer, stand);
   } else if(anim=="Attack1"){
-    if(frame>18){
-      frame=0;
-      buttonpress=0;
+    if(frame>18){ //animation ends
+      frame=0; 
+      buttonpress=0;//next animation will be different
     }
 
     loadMedia(gRenderer, attack1[frame/2]);
@@ -168,7 +168,7 @@ int Mario::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT
     t++;
     hity=3*t-.3*t*t;  //knock into air with damage
     if(hity<=0){//if hit goes below zero in an iteration
-      hity=0;
+      hity=0;//reset values
       xvel=0;
       frame=0;
       anim="Stand";
@@ -200,15 +200,12 @@ int Mario::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT
     xpos=320;
     health=0;
     t++;
-    jump=150-.3*t*t;
+    jump=150-.3*t*t; //start above stage
     if(jump<=0){//if next step takes below 0
       jump=0;
       anim="Stand";
     }
   }
-
-  time=time+.25;
-
 
   //render the image with appropriate flip and no rotation
   SDL_RenderCopyEx( gRenderer, gImage, NULL, &renderQuad, 0, NULL, flip);

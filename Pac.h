@@ -82,11 +82,11 @@ Pac::~Pac(){
 }
 
 SDL_Rect Pac::get_location(int x){
-  if(x==0){ //if x is 0 use the rectangle if mario's body
-    return (location);
-  } else {
-    return (fist);  //otherwise use rectangle of his fist
-  }
+  	if(x==0){ //if x is 0 use the rectangle if mario's body
+    		return (location);
+  	} else {
+    		return (fist);  //otherwise use rectangle of his fist
+  	}
 }
 
 void Pac::loadMedia(SDL_Renderer* gRenderer, string filename){
@@ -94,127 +94,124 @@ void Pac::loadMedia(SDL_Renderer* gRenderer, string filename){
         gImage=loadTexture(filename, gRenderer); //call load texture with appropriate image name
   
 }
-void Pac::win(SDL_Renderer* gRenderer){
-  SDL_Rect renderQuad = { xpos, ypos, mWidth, mHeight};
-  loadMedia(gRenderer, "pacwin.png");
-  SDL_RenderCopyEx( gRenderer, gImage, NULL, &renderQuad, 0, NULL, flip);
+void Pac::win(SDL_Renderer* gRenderer){  //renders winning image
+  	SDL_Rect renderQuad = { xpos, ypos, mWidth, mHeight};
+  	loadMedia(gRenderer, "pacwin.png");
+  	SDL_RenderCopyEx( gRenderer, gImage, NULL, &renderQuad, 0, NULL, flip);
 }
-void Pac::lost(SDL_Renderer* gRenderer){
-  SDL_Rect renderQuad = { xpos, ypos, mWidth, mHeight};
-  loadMedia(gRenderer, "paclose.png");
-  SDL_RenderCopyEx( gRenderer, gImage, NULL, &renderQuad, 0, NULL, flip);
+void Pac::lost(SDL_Renderer* gRenderer){ //renders losing image
+  	SDL_Rect renderQuad = { xpos, ypos, mWidth, mHeight};
+  	loadMedia(gRenderer, "paclose.png");
+  	SDL_RenderCopyEx( gRenderer, gImage, NULL, &renderQuad, 0, NULL, flip);
 }
 
 int Pac::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT ){
-  move(SCREEN_WIDTH, SCREEN_HEIGHT);    //update x and y positions
-  location.x=xpos+30;// set hit box for character
-  location.y=ypos+30-jump;
-  location.w=mWidth-40;
-  location.h=mHeight-30;
-  if(flip==SDL_FLIP_NONE){//set hitbox for fist. dependent on the way character is facing
-    fist.x=xpos+30;
-    fist.y=ypos+20-jump;
-    fist.w=mWidth-40;
-    fist.h=mHeight-40;
-  } else if(flip==SDL_FLIP_HORIZONTAL){
-    fist.x=xpos+10;
-    fist.y=ypos+20-jump;
-    fist.w=mWidth-40;
-    fist.h=mHeight-20;
-  }
-  SDL_Rect renderQuad = { xpos, ypos-jump-hity, mWidth, mHeight};
+  	move(SCREEN_WIDTH, SCREEN_HEIGHT);    //update x and y positions
+  	location.x=xpos+30;// set hit box for character
+  	location.y=ypos+30-jump;
+  	location.w=mWidth-40;
+  	location.h=mHeight-30;
+  	if(flip==SDL_FLIP_NONE){//set hitbox for fist. dependent on the way character is facing
+    		fist.x=xpos+30;
+    		fist.y=ypos+20-jump;
+    		fist.w=mWidth-40;
+    		fist.h=mHeight-40;
+  	} else if(flip==SDL_FLIP_HORIZONTAL){
+    		fist.x=xpos+10;
+    		fist.y=ypos+20-jump;
+    		fist.w=mWidth-40;
+    	        fist.h=mHeight-20;
+  	}
+  	SDL_Rect renderQuad = { xpos, ypos-jump-hity, mWidth, mHeight};
 
   //calculate jump values to keep track of position while in the air
-  if(jump>0 && anim!="Damage"){
-    if(!buttonpress && !buttonpress2 && anim!="Respawn"){//once attack animations stop
-      anim="Jump";
-    }
-    t++;
-    jump=10*t-.3*t*t;
-    if(jump<0){//if next step takes below 0
-      jump=0;
-    }
-  }
+  	if(jump>0 && anim!="Damage"){
+    		if(!buttonpress && !buttonpress2 && anim!="Respawn"){//once attack animations stop
+      			anim="Jump";
+    		}
+    		t++;
+    		jump=10*t-.3*t*t;
+    		if(jump<0){//if next step takes below 0
+      			jump=0;
+    		}
+  	}
   
-  if(buttonpress==0 && jump==0 && anim!="Walk" && anim!="Damage" && buttonpress2==0 && anim!="Crouch" && anim!="Respawn"){
-    anim="Stand"; //default state
-  }
-  if (anim=="Stand"){
-    loadMedia(gRenderer, stand);
-  } else if(anim=="Attack1"){
-    if(frame>12){
-      frame=0;
-      buttonpress=0;
-    }
-    loadMedia(gRenderer, attack1[frame/2]);
-    frame++;
-  } else if(anim=="Damage"){
-    if(frame>2){
-      frame=0;
-    }
-    loadMedia(gRenderer, damaged[frame/2]);
-    if(frame==0 || frame%2!=0){//stop animation as mario is lieing down
-      frame++;
-    }
+  	if(buttonpress==0 && jump==0 && anim!="Walk" && anim!="Damage" && buttonpress2==0 && anim!="Crouch" && anim!="Respawn"){
+    		anim="Stand"; //default state
+  	}
+  	if (anim=="Stand"){
+    		loadMedia(gRenderer, stand);
+  	} else if(anim=="Attack1"){
+	        if(frame>12){
+      			frame=0;
+      			buttonpress=0;//next loop will be new animation once this finishes
+    		}
+    		loadMedia(gRenderer, attack1[frame/2]);
+    		frame++;
+  	} else if(anim=="Damage"){
+    		if(frame>2){
+      			frame=0;
+    		}
+    		loadMedia(gRenderer, damaged[frame/2]);
+    		if(frame==0 || frame%2!=0){//stop animation as mario is lieing down
+      			frame++;
+    		}
 
-    t++;
-    hity=3*t-.3*t*t;  //knock into air with damage
-    if(hity<=0){//if hit goes below zero in an iteration
-      hity=0;
-      xvel=0;
-      frame=0;
-      anim="Stand";
-      jump=0;
-      t=0;
-    }
-  } else if(anim=="Crouch"){
-    loadMedia(gRenderer, crouch);
-  }else if (anim=="Walk"){
-    if(frame>6){
-      frame=0;
-    }    
-    loadMedia(gRenderer, walk[frame/2]);
+    		t++;
+    		hity=3*t-.3*t*t;  //knock into air with damage
+    		if(hity<=0){//if hit goes below zero in an iteration
+      			hity=0;
+      			xvel=0;
+      			frame=0;
+      			anim="Stand";
+      			jump=0;
+      			t=0;
+    		}
+  	} else if(anim=="Crouch"){
+    		loadMedia(gRenderer, crouch);
+  	}else if (anim=="Walk"){
+    		if(frame>6){
+      			frame=0;
+    		}    
+    		loadMedia(gRenderer, walk[frame/2]);
     
-    frame++;
+    		frame++;
     
-  } else if (anim=="Jump"){
-    loadMedia(gRenderer, jumpanim);
-  } else if (anim=="Throw"){
-    if(frame==8){
-      range=1;
-    }
-    if(frame>10){
-      frame=0;
-      buttonpress2=0; //notifies key presses that other actions can now happen
-    }
-    loadMedia(gRenderer, attack2[frame/2]);
-    frame++;
+  	} else if (anim=="Jump"){
+    		loadMedia(gRenderer, jumpanim);
+  	} else if (anim=="Throw"){
+    		if(frame==8){
+      			range=1; //tells main when to launch projectile
+   	 	}
+    		if(frame>10){
+      			frame=0;
+      			buttonpress2=0; //notifies key presses that other actions can now happen
+    		}
+    		loadMedia(gRenderer, attack2[frame/2]);
+    		frame++;
 
-  } else if(anim=="Respawn"){
-    ypos=200;
-    xpos=320;
-    health=0;
-    t++;
-    jump=150-.3*t*t;
-    if(jump<=0){//if next step takes below 0
-      jump=0;
-      anim="Stand";
-    }
-  }
-
-  time=time+.25;
-
+  	} else if(anim=="Respawn"){
+    		ypos=200;
+    		xpos=320;
+    		health=0;
+    		t++;
+    		jump=150-.3*t*t;
+    		if(jump<=0){//if next step takes below 0
+      			jump=0;
+      			anim="Stand";
+    		}
+  	}
 
   //render the image with appropriate flip and no rotation
-  SDL_RenderCopyEx( gRenderer, gImage, NULL, &renderQuad, 0, NULL, flip);
+  	SDL_RenderCopyEx( gRenderer, gImage, NULL, &renderQuad, 0, NULL, flip);
   //Update the surface
-  SDL_RenderPresent( gRenderer );
-  if(range){
-    range=0;
-    return 1;
-  } else {
-    return 0;
-  }
+  	SDL_RenderPresent( gRenderer );
+  	if(range){
+    		range=0;
+    		return 1;
+  	} else {
+    		return 0;
+  	}
 
 }
 			
