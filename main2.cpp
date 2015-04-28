@@ -424,7 +424,7 @@ bool init1()
 		}
 
 		//Create window
-		gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+		gWindow = SDL_CreateWindow( "Character Select", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
 		if( gWindow == NULL )
 		{
 			printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -582,39 +582,28 @@ int main (){
 
 	//Free resources and close SDL
 	close1();
-	//	Mario mario1(1);
-	//	Mario mario2(2);
-	//	Link link1(1);
-	//	Link link2(2);
-	//	Pac pac1(1);
-	//	Pac pac2(2);
-	//	Megaman meg1(1);
-	//	Megaman meg2(2);
-	
 	SCREEN_WIDTH=640;
 	SCREEN_HEIGHT=480;
-	cout <<"got1" << endl;
+	// assign character to the right object
 	if (a==1) {
-	  character1=&mario1;
+	  character2=&mario1;
 	} else if (a==2) {
-	  character1=&link1;
+	  character2=&link1;
 	} else if (a==3) {
-	  character1=&pacman1;
+	  character2=&pacman1;
 	} else if (a==4) {
-	  character1=&megaman1;
+	  character2=&megaman1;
 	}
 	if (b==5) {
-	  character2=&mario2;
+	  character1=&mario2;
 	} else if (b==6) {
-	  character2=&link2;
+	  character1=&link2;
 	} else if (b==7) {
-	  character2=&pacman2;
+	  character1=&pacman2;
 	} else if (b==8) {
-	  character2=&megaman2;
+	  character1=&megaman2;
 	}
-	cout <<"got2" << endl;
-	//Character * character1= &meg1;
-	//Character * character2=&mario1;
+
   Background background;
   SDL_Rect* intersection;
   SDL_Rect rect1; //rectangles representing position of characters
