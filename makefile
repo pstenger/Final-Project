@@ -1,10 +1,10 @@
-all:	main2
+all:	main
 
-main: main2.o
-	g++  -lSDL2 -lSDL2_image -lSDL2_ttf main2.o -o main2
+main: main.o
+	g++  -lSDL2 -lSDL2_image -lSDL2_ttf main.o -o main
 
 main.o: main.cpp
-	g++ -c main2.cpp -lSDL2 -lSDL2_image -lSDL2_ttf
+	g++ -c main.cpp -lSDL2 -lSDL2_image -lSDL2_ttf
 
 clean:
-	rm -f *.o main2
+	rm -f *.o main

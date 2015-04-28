@@ -125,7 +125,7 @@ int Pac::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT )
   	SDL_Rect renderQuad = { xpos, ypos-jump-hity, mWidth, mHeight};
 
   //calculate jump values to keep track of position while in the air
-  	if(jump>0 && anim!="Damage"){
+  	if(jump>0 && anim!="Damage" && anim!="Respawn"){
     		if(!buttonpress && !buttonpress2 && anim!="Respawn"){//once attack animations stop
       			anim="Jump";
     		}
@@ -205,7 +205,7 @@ int Pac::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT )
   //render the image with appropriate flip and no rotation
   	SDL_RenderCopyEx( gRenderer, gImage, NULL, &renderQuad, 0, NULL, flip);
   //Update the surface
-  	SDL_RenderPresent( gRenderer );
+	SDL_RenderPresent( gRenderer );
   	if(range){
     		range=0;
     		return 1;

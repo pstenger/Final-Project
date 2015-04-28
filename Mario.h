@@ -25,7 +25,7 @@ class Mario: public Character {
         private:     
   		string stand; //variables represent file names for each animation/state
 		string crouch;
-  		string attack1[8]; 
+  		string attack1[10]; 
   		string attack;
 		string jumpanim; //jump animation
   		string walk[8];
@@ -81,6 +81,14 @@ Mario::Mario (int player) : Character(player){
  	attack2[6]="mariothrow7.png";
  	attack2[7]="mariothrow8.png";
 	time=0;
+	if(player==2){
+	  xpos=90;
+	  ypos=230;
+	} else {
+	  xpos=400;
+	  ypos=230;
+	  flip=SDL_FLIP_HORIZONTAL;
+	}
 }
 
 Mario::~Mario(){
@@ -132,7 +140,7 @@ int Mario::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT
   SDL_Rect renderQuad = { xpos, ypos-jump-hity, mWidth, mHeight};
 
   //calculate jump values to keep track of position while in the air
-  if(jump>0 && anim!="Damage"){
+  if(jump>0 && anim!="Damage" && anim!="Respawn"){
     if(!buttonpress && !buttonpress2){//once attack animations stop
       anim="Jump";
     }

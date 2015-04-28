@@ -96,7 +96,7 @@ Link::~Link(){
 
 
 SDL_Rect Link::get_location(int x){
-  	if(x==0){ //if x is 0 use the rectangle if mario's body
+  	if(x==0){ //if x is 0 use the rectangle if characters body
     		return (location);
   	} else {
     		return (fist);  //otherwise use rectangle of his fist
@@ -142,7 +142,7 @@ int Link::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT 
   	SDL_Rect renderQuad = { xpos, ypos-jump-hity, mWidth, mHeight};
 
   	//calculate jump values to keep track of position while in the air
-   	if(jump>0 && anim!="Damage"){
+   	if(jump>0 && anim!="Damage" && anim!="Respawn"){
 	        if(!buttonpress && !buttonpress2 && anim!="Respawn"){//once attack animations stop 
 	              anim="Jump";
 	        }

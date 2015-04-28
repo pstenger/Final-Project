@@ -48,7 +48,7 @@ Projectile::Projectile(int xcord, int ycord, string facing, string character)
 	mWidth = 0;
 	mHeight = 0;
 	if(character=="Megaman" || character=="Link" || character=="Pacman"){ //have different image sizes so different offsets
-	  ypos=ycord+30;
+	  ypos=ycord+40;
 	} else {
 	  ypos=ycord+25;
 	}
