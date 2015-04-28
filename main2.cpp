@@ -1,4 +1,4 @@
-//simple driver program to run the functions
+//simple driver program to run the functions as well as the  menu
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -63,11 +63,6 @@ class LTexture
 		//Loads image at specified path
 		bool loadFromFile( std::string path );
 		
-  //		#ifdef _SDL_TTF_H
-		//Creates image from font string
-  //		bool loadFromRenderedText( std::string textureText, SDL_Color textColor );
-  //		#endif
-		
 		//Deallocates texture
   		void free();
 
@@ -128,12 +123,6 @@ bool loadMedia();
 
 //Frees media and shuts down SDL
 void close1();
-
-//The window we'll be rendering to
-//SDL_Window* gWindow = NULL;
-
-//The window renderer
-//SDL_Renderer* gRenderer = NULL;
 
 //Mouse button sprites
 SDL_Rect gSpriteClips[ BUTTON_SPRITE_TOTAL ];
@@ -197,42 +186,6 @@ bool LTexture::loadFromFile( std::string path )
 	return mTexture != NULL;
 }
 
-//#ifdef _SDL_TTF_H
-//bool LTexture::loadFromRenderedText( std::string textureText, SDL_Color textColor )
-//{
-	//Get rid of preexisting texture
-//	free();
-	 
-	
-	//Render text surface
-	//SDL_Surface* textSurface = TTF_RenderText_Solid( gFont, textureText.c_str(), textColor );
-	//	if( textSurface == NULL )
-	//	{
-	  //		printf( "Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError() );
-	//	}
-	//	else
-	  //	{
-		//Create texture from surface pixels
-	//       mTexture = SDL_CreateTextureFromSurface( gRenderer, textSurface );
-//		if( mTexture == NULL )
-//		{
-//			printf( "Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError() );
-//		}
-//		else
-//		{
-			//Get image dimensions
-//			mWidth = textSurface->w;
-//			mHeight = textSurface->h;
-//		}
-
-		//Get rid of old surface
-//		SDL_FreeSurface( textSurface );
-//	}
-	
-	//Return success
-//	return mTexture != NULL;
-//}
-//#endif
 
 void LTexture::free()
 {
@@ -377,22 +330,6 @@ int LButton::handleEvent( SDL_Event* e, int i )
 		}
 		 
 		  	{
-			//Set mouse over sprite
-		  //			switch( e->type )
-		  //	{
-		  //		case SDL_MOUSEMOTION:
-		  //		mCurrentSprite = mario8;
-		  //		break;
-		  //	
-		  //		case SDL_MOUSEBUTTONDOWN:
-		  //		mCurrentSprite = mariohd;
-		  //		break;
-		  //		
-		  //		case SDL_MOUSEBUTTONUP:
-		  //		mCurrentSprite = mariohd;
-		  //		break;
-		  //	}
-		  //}
 	}
 	}
 }
@@ -584,24 +521,41 @@ int main (){
 	close1();
 	SCREEN_WIDTH=640;
 	SCREEN_HEIGHT=480;
+	string rangename1, rangename2, player1name, player2name;
 	// assign character to the right object
 	if (a==1) {
-	  character2=&mario1;
+	  character1=&mario2;
+	  player1name="Mario";
+	  rangename1="mariorange.png";
 	} else if (a==2) {
-	  character2=&link1;
+	  character1=&link2;
+	  player1name="Link";
+	  rangename1="linkrange.png";
 	} else if (a==3) {
-	  character2=&pacman1;
+	  character1=&pacman2;
+	  player1name="Pacman";
+	  rangename1="pacrange.png";
 	} else if (a==4) {
-	  character2=&megaman1;
+	  character1=&megaman2;
+	  player1name="Megaman";
+	  rangename1="megamanrange.png";
 	}
 	if (b==5) {
-	  character1=&mario2;
+	  character2=&mario1;
+	   player2name="Mario";
+	  rangename2="mariorange.png";
 	} else if (b==6) {
-	  character1=&link2;
+	  character2=&link1;
+	   player2name="Link";
+	  rangename2="linkrange.png";
 	} else if (b==7) {
-	  character1=&pacman2;
+	  character2=&pacman1;
+	   player2name="Pacman";
+	  rangename2="pacrange.png";
 	} else if (b==8) {
-	  character1=&megaman2;
+	  character2=&megaman1;
+	  player2name="Megaman";
+	  rangename2="megamanrange.png";
 	}
 
   Background background;
@@ -619,14 +573,13 @@ int main (){
   vector<Projectile> range1;  //vectors for each players projectiles
   vector<Projectile> range2;
   vector<Projectile>::iterator iter; //iterator
-  string char1="pacrange.png"; //for determinng the file type for projectile
-  string char2="linkrange.png";
+  string char1=rangename1; //for determinng the file type for projectile
+  string char2=rangename2;
   init(); //initialize window
   background.Load("background.png",gRenderer);
   bool quit = false;
   SDL_Event e;
-  cout<<"got3" <<endl;
-  TTF_Init(); //initialize text
+   TTF_Init(); //initialize text
   TTF_Font *font =TTF_OpenFont("font.ttf", 35);
   if(font==NULL){
     cout<<"Failed"<<endl;
@@ -685,7 +638,7 @@ int main (){
 	projstring=ss.str();
 	ss.clear();
 	ss.str("");
-	Projectile projstring(character1->get_xpos(), character1->get_ypos(), character1->facing(), "Pacman");
+	Projectile projstring(character1->get_xpos(), character1->get_ypos(), character1->facing(), player1name);
 	range1.push_back(projstring);   //puts new projectile object into vector with current x and y pos of character
 	proj++; //makes proj, and therefore next object name different
       }
@@ -697,7 +650,7 @@ int main (){
 	projstring=ss.str();
 	ss.clear();
 	ss.str("");
-	Projectile projstring(character2->get_xpos(), character2->get_ypos(), character2->facing(), "Link");      
+	Projectile projstring(character2->get_xpos(), character2->get_ypos(), character2->facing(), player2name);      
 	range2.push_back(projstring);
 	proj++;
       }
