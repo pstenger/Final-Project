@@ -469,6 +469,7 @@ int main (){
   b=0;
   c=0;
   bool quit = false;
+  bool picked =false; //true when both characters picked
 	//Start up SDL and create window
 	if( !init1() )
 	{
@@ -490,17 +491,20 @@ int main (){
 			SDL_Event e;
 
 			//While application is running
-			while( !quit )
+			while( !quit && !picked)
 			{
 				//Handle events on queue
 				while( SDL_PollEvent( &e ) != 0 )
 				{
 					//User requests quit
-				  if( e.type == SDL_QUIT || (a!=0 && b!=0) )
-					{
+				  if( e.type == SDL_QUIT )
+				        {
 						quit = true;
+			    
 					}
-					
+				  if(a!=0 && b!=0){
+				    picked=true;
+				  }
 					//Handle button events
 					for( int i = 0; i < TOTAL_BUTTONS; ++i )
 					{
