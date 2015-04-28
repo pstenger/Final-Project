@@ -729,6 +729,12 @@ int main (){
     SDL_DestroyTexture(health2tex);
     SDL_FreeSurface(health2surf);
     TTF_CloseFont(font);
+    for(iter=range1.begin(); iter!=range1.end(); iter++){
+      iter->free();
+    }
+    for(iter=range2.begin(); iter!=range2.end(); iter++){
+      iter->free(); 
+    }
   }
   return 0;
 }

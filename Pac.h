@@ -180,14 +180,16 @@ int Pac::display (SDL_Renderer* gRenderer, int SCREEN_WIDTH, int SCREEN_HEIGHT )
   	} else if (anim=="Jump"){
     		loadMedia(gRenderer, jumpanim);
   	} else if (anim=="Throw"){
-    		if(frame==8){
+    		if(frame==6){
       			range=1; //tells main when to launch projectile
-   	 	}
+		     
+		}
+		loadMedia(gRenderer, attack2[frame/2]);
     		if(frame>10){
       			frame=0;
       			buttonpress2=0; //notifies key presses that other actions can now happen
-    		}
-    		loadMedia(gRenderer, attack2[frame/2]);
+		}
+    		
     		frame++;
 
   	} else if(anim=="Respawn"){
