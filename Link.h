@@ -79,7 +79,7 @@ Link::Link (int player) : Character(player){
  	attack2[6]="linkthrow7.png";
  	attack2[7]="linkthrow8.png";
 	time=0;
-      	if(player==2){  //sets beginning position of character (overrides base class default bc link sprite size different)
+      	if(player==1){  //sets beginning position of character (overrides base class default bc link sprite size different)
 	  xpos=90;
 	  ypos=200;
 	} else {

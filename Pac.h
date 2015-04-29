@@ -65,7 +65,7 @@ Pac::Pac (int player) : Character(player){
  	attack2[4]="pacthrow5.png";
  	attack2[5]="pacthrow6.png";
 	time=0;
-	if(player==2){  //sets beginning position of character (overrides base class default bc megaman sprite size different)
+	if(player==1){  //sets beginning position of character (overrides base class default bc megaman sprite size different)
           xpos=90;
           ypos=200;
       

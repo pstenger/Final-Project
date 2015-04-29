@@ -37,19 +37,19 @@ class Character{
     		SDL_Texture* gScreenSurface;
     		int mWidth, mHeight;
     		//Current displayed image
-    		SDL_Texture* gImage;
-    		SDL_RendererFlip flip;
-    		int xpos, ypos;
-    		int controls;
-    		string anim;
-    		int xvel, yvel;
-    		int health;
-    		int hity;
-    		int t;
-    		double jump;
+    		SDL_Texture* gImage; 
+    		SDL_RendererFlip flip;  //direction image is flipped
+    		int xpos, ypos; 
+    		int controls;  //player 1 or player 2 controls
+    		string anim; //which animation to render
+    		int xvel, yvel; //x and y velocity
+    		int health;//player health
+    		double hity; //y impact from getting damaged
+    		int t; //counter  for physics of jump and hity
+    		double jump; //jump value
     		bool buttonpress, buttonpress2; //keeps track of whether either attack button has been pressed
-    		int lives;
-    		int frame;
+    		int lives;  
+    		int frame; //frame of animation
 };
 
 Character::Character (int player) : controls(player){
@@ -72,7 +72,7 @@ Character::Character (int player) : controls(player){
   	frame=0;
   	buttonpress=0;
   	buttonpress2=0;
-  	if(player==2){  //sets beginning position of character
+  	if(player==1){  //sets beginning position of character
     		xpos=90;
     		ypos=230;
   	} else {
@@ -198,7 +198,7 @@ void Character::move(int SCREEN_WIDTH, int SCREEN_HEIGHT){
 
 void Character::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
   //make sure event is key press
-  if(controls==1 && anim!="Damage"){ //if player 1
+  if(controls==2 && anim!="Damage"){ //if player 2 and when no being damaged
     if( e.type == SDL_KEYDOWN && e.key.repeat == 0 ){
 
       switch( e.key.keysym.sym ){
@@ -215,7 +215,7 @@ void Character::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
 	anim="Crouch";
 	break;
       case SDLK_LEFT:
-	if(!buttonpress && anim!="Damage"){ //can't move out of damage animation or attack animation
+	if(!buttonpress && anim!="Damage" && !buttonpress2){ //can't move out of damage animation or attack animation
 	  	xvel -= img_vel;
 	}
 	if(flip==SDL_FLIP_NONE){
@@ -226,7 +226,7 @@ void Character::handleevent(SDL_Event& e, SDL_Renderer* gRenderer){
 	}
 	break;
       case SDLK_RIGHT:
-	if(!buttonpress && anim!="Damage"){
+	if(!buttonpress && anim!="Damage" && !buttonpress2){
 	  	xvel += img_vel;
 	}
 	if(flip==SDL_FLIP_HORIZONTAL){
@@ -278,7 +278,7 @@ ase xvel bc it is already 0
 	break;
       }
     }
-  } else if (controls==2 && anim!="Damage"){  //if player 2
+  } else if (controls==1 && anim!="Damage"){  //if player 1
     if( e.type == SDL_KEYDOWN && e.key.repeat == 0 ){
 
       switch( e.key.keysym.sym ){
@@ -295,7 +295,7 @@ ase xvel bc it is already 0
 	anim="Crouch";
 	break;
       case SDLK_a:
-	if(!buttonpress && anim!="Damage"){
+	if(!buttonpress && anim!="Damage" && !buttonpress2){
 	  	xvel -= img_vel;
 	}
 	if(flip==SDL_FLIP_NONE){ //change way facing appropriately
@@ -306,7 +306,7 @@ ase xvel bc it is already 0
 	}
 	break;
       case SDLK_d:
-	if(!buttonpress && anim!="Damage"){
+	if(!buttonpress && anim!="Damage" && !buttonpress2){
 	  	xvel += img_vel;
 	}
 	if(flip==SDL_FLIP_HORIZONTAL){

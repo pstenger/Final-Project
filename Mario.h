@@ -81,7 +81,7 @@ Mario::Mario (int player) : Character(player){
  	attack2[6]="mariothrow7.png";
  	attack2[7]="mariothrow8.png";
 	time=0;
-	if(player==2){
+	if(player==1){
 	  xpos=90;
 	  ypos=230;
 	} else {

@@ -544,36 +544,36 @@ int main (){
 	string rangename1, rangename2, player1name, player2name;
 	// assign character to the right object
 	if (a==1) {
-	  character1=&mario2;
+	  character1=&mario1;
 	  player1name="Mario";
 	  rangename1="mariorange.png";
 	} else if (a==2) {
-	  character1=&link2;
+	  character1=&link1;
 	  player1name="Link";
 	  rangename1="linkrange.png";
 	} else if (a==3) {
-	  character1=&pacman2;
+	  character1=&pacman1;
 	  player1name="Pacman";
 	  rangename1="pacrange.png";
 	} else if (a==4) {
-	  character1=&megaman2;
+	  character1=&megaman1;
 	  player1name="Megaman";
 	  rangename1="megamanrange.png";
 	}
 	if (b==5) {
-	  character2=&mario1;
+	  character2=&mario2;
 	   player2name="Mario";
 	  rangename2="mariorange.png";
 	} else if (b==6) {
-	  character2=&link1;
+	  character2=&link2;
 	   player2name="Link";
 	  rangename2="linkrange.png";
 	} else if (b==7) {
-	  character2=&pacman1;
+	  character2=&pacman2;
 	   player2name="Pacman";
 	  rangename2="pacrange.png";
 	} else if (b==8) {
-	  character2=&megaman1;
+	  character2=&megaman2;
 	  player2name="Megaman";
 	  rangename2="megamanrange.png";
 	}
@@ -666,28 +666,6 @@ int main (){
 	rect1_hit=character1->get_location(1); //fist positions
 	rect2_hit=character2->get_location(1);
 
-	for(iter=range1.begin(); iter!=range1.end(); iter++){  //iterates through projectile vectors, comparing to character location to determine if it is a hit
-	  iter->Load(char1, gRenderer);  //displays projectile
-	  rectproj=iter->get_location();  //sets rectangle of projectile for use in collision detection
-	  if(SDL_HasIntersection(&rectproj, &rect2)){
-	    character2->damage(2, character1->facing());    
-	  } else {
-	    iter->render(SCREEN_WIDTH, SCREEN_HEIGHT, gRenderer);  //renders projectile if it doesn't hit character
-	  }
-	  iter->update();  //updates position of projectile
-	}
-	for(iter=range2.begin(); iter!=range2.end(); iter++){ //same as above for player 2
-	  iter->Load(char2, gRenderer);	
-	  rectproj=iter->get_location();
-	  if(SDL_HasIntersection(&rectproj, &rect1)){
-	    character1->damage(2, character2->facing());
-	   
-	  } else {
-	    iter->render(SCREEN_WIDTH, SCREEN_HEIGHT, gRenderer);
-	  }
-	  iter->update();
-	}
-
 	if (character1->attacking()==1){ //check for melee attack
 	  if(SDL_HasIntersection(&rect1_hit, &rect2)){ //check for intersection
 	    character2->damage(1, character1->facing()); //if intersection do damage
@@ -698,6 +676,28 @@ int main (){
 	    character1->damage(1, character2->facing());
 	  }
 	}
+	for(iter=range1.begin(); iter!=range1.end(); iter++){  //iterates through projectile vectors, comparing to character location to determine if it is a hit
+          iter->Load(char1, gRenderer);  //displays projectile
+          rectproj=iter->get_location();  //sets rectangle of projectile for use in collision detection
+          if(SDL_HasIntersection(&rectproj, &rect2)){
+            character2->damage(2, character1->facing());
+          } else {
+            iter->render(SCREEN_WIDTH, SCREEN_HEIGHT, gRenderer);  //renders projectile if it doesn't hit character
+          }
+          iter->update();  //updates position of projectile
+        }
+        for(iter=range2.begin(); iter!=range2.end(); iter++){ //same as above for player 2
+          iter->Load(char2, gRenderer);
+          rectproj=iter->get_location();
+          if(SDL_HasIntersection(&rectproj, &rect1)){
+            character1->damage(2, character2->facing());
+
+          } else {
+            iter->render(SCREEN_WIDTH, SCREEN_HEIGHT, gRenderer);
+          }
+          iter->update();
+        }
+
 	ss.clear();
 	ss.str("");
 	ss<<(character1->gethealth());
@@ -747,7 +747,7 @@ bool init(){
     success=false;
   } else {
     //create window
-    gWindow = SDL_CreateWindow( "Super Smash", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT , SDL_WINDOW_SHOWN );
+    gWindow = SDL_CreateWindow( "Super Smash Bros", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT , SDL_WINDOW_SHOWN );
     if( gWindow == NULL ){
       printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError());
       success=false;

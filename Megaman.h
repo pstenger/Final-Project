@@ -78,7 +78,7 @@ Megaman::Megaman (int player) : Character(player){
  	attack2[6]="megamanthrow7.png";
  	attack2[7]="megamanthrow8.png";
 	time=0;
-	if(player==2){  //sets beginning position of character (overrides base class default bc megaman sprite size different)
+	if(player==1){  //sets beginning position of character (overrides base class default bc megaman sprite size different)
           xpos=90;
           ypos=200;
       
