@@ -1,4 +1,7 @@
 //driver program to run the functions as well as the  menu
+//Two classes for the running of the menu are instantiated at
+//the top here, and follwing are while loops for displaying the
+//menu and then the game
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -23,7 +26,7 @@ SDL_Renderer* gRenderer=NULL;
 int SCREEN_WIDTH=1280;
 int SCREEN_HEIGHT=800;
 SDL_Texture* background;
-const int BUTTON_WIDTH = 300;
+const int BUTTON_WIDTH = 300; //images for character selection
 const int BUTTON_HEIGHT = 200;
 const int TOTAL_BUTTONS = 8;
 
@@ -303,8 +306,8 @@ int LButton::handleEvent( SDL_Event* e, int i )
 		}
 		//Mouse is inside button
 	        else if (e->type !=SDL_MOUSEBUTTONUP && i == 0) {
-		  	mCurrentSprite = mariohd;
-			if (e->type ==SDL_MOUSEBUTTONDOWN){
+		  mCurrentSprite = mariohd; //show hd image when mouse over
+		  if (e->type ==SDL_MOUSEBUTTONDOWN){ //return approppriate code for character selected
 			  return(1);
 			}
 		} else if (e->type !=SDL_MOUSEBUTTONUP && (i == 2)) {
@@ -485,7 +488,7 @@ int main (){
 		else
 		{	
 			//Main loop flag
-		  //	bool quit = false;
+		
 
 			//Event handler
 			SDL_Event e;

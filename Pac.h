@@ -1,4 +1,5 @@
-//This is the derived class for the character mario
+//This is the derived class for the character Pacman and takes as input
+//1 or 2 for player 1 or 2
 #ifndef PAC_H
 #define PAC_H
 #include <SDL2/SDL.h>

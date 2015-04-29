@@ -1,3 +1,5 @@
+//This class simply renders an image to a screen. In this case it is the background
+//for our game
 #ifndef BACKGROUND_H
 #define BACKGROUND_H
 #include <SDL2/SDL.h>
@@ -60,21 +62,15 @@ void Background::Load(string path, SDL_Renderer* gRenderer)
 
 	//Load image at specified path
 	SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
-	if( loadedSurface == NULL )
-	{
+	if( loadedSurface == NULL ){
 		printf( "Unable to load image %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError() );
-	}
-	else
-	{
+	} else {
 
 	
 	  newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
-		if( newTexture == NULL )
-		{
+		if( newTexture == NULL ){
 			printf( "Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
-		}
-		else
-		{
+		} else {
 			//Get image dimensions
 			mWidth = loadedSurface->w;
 			mHeight = loadedSurface->h;
@@ -92,8 +88,7 @@ void Background::Load(string path, SDL_Renderer* gRenderer)
 void Background::free()
 {
 	//Free texture if it exists
-	if( mTexture != NULL )
-	{
+	if( mTexture != NULL ){
 		SDL_DestroyTexture( mTexture );
 		mTexture = NULL;
 		mWidth = 0;
@@ -102,11 +97,11 @@ void Background::free()
 }
 
 void Background::render(int SCREEN_WIDTH, int SCREEN_HEIGHT, SDL_Renderer* gRenderer){
-  //SDL_RenderClear(gRenderer);
-  
+ 
+  //following code creates rectangle of image to render
   SDL_Rect renderQuad;
   renderQuad.x=0;
-  renderQuad.y=0;
+  renderQuad.y=0; 
   renderQuad.w=SCREEN_WIDTH;
   renderQuad.h=SCREEN_HEIGHT;
   SDL_RenderCopy(gRenderer, mTexture, NULL, &renderQuad);

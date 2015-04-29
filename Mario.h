@@ -1,4 +1,5 @@
-//This is the derived class for the character mario
+//This is the derived class for the character Mario
+//takes as input 1 or 2 for player 
 #ifndef MARIO_H
 #define MARIO_H
 #include <SDL2/SDL.h>

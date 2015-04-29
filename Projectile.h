@@ -1,3 +1,6 @@
+//The class for instantiating projectiles. This takes as input the
+//characters x and y positions, which way they are facing and which
+//character they are
 #ifndef PROJECTILE_H
 #define PROJECTILE_H
 #include <SDL2/SDL.h>
@@ -148,7 +151,7 @@ void Projectile::update(){
         if(direction=="left"){//velocity
 	        xpos=xpos-15;
     
-  	} else if (direction=="right"){
+  	} else if (direction=="right"){ //move right if facing right
     		xpos=xpos+15;
   
   	}

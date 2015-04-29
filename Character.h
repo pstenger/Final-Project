@@ -1,3 +1,5 @@
+//Base class for characters contains various functions, the most important of which are
+//the event handling function which handles key presses and the texture loading function
 #ifndef CHARACTER_H
 #define CHARACTER_H
 #include <SDL2/SDL.h>
