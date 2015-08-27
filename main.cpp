@@ -680,26 +680,35 @@ int main (){
 	  }
 	}
 	for(iter=range1.begin(); iter!=range1.end(); iter++){  //iterates through projectile vectors, comparing to character location to determine if it is a hit
-          iter->Load(char1, gRenderer);  //displays projectile
-          rectproj=iter->get_location();  //sets rectangle of projectile for use in collision detection
-          if(SDL_HasIntersection(&rectproj, &rect2)){
-            character2->damage(2, character1->facing());
+	  if (iter->OffScreen()){
+            iter->free();
           } else {
-            iter->render(SCREEN_WIDTH, SCREEN_HEIGHT, gRenderer);  //renders projectile if it doesn't hit character
-          }
-          iter->update();  //updates position of projectile
-        }
-        for(iter=range2.begin(); iter!=range2.end(); iter++){ //same as above for player 2
-          iter->Load(char2, gRenderer);
-          rectproj=iter->get_location();
-          if(SDL_HasIntersection(&rectproj, &rect1)){
-            character1->damage(2, character2->facing());
 
+	    iter->Load(char1, gRenderer);  //displays projectile
+	    rectproj=iter->get_location();  //sets rectangle of projectile for use in collision detection
+	    if(SDL_HasIntersection(&rectproj, &rect2)){
+	      character2->damage(2, character1->facing());
+	    } else {
+	      iter->render(SCREEN_WIDTH, SCREEN_HEIGHT, gRenderer);  //renders projectile if it doesn't hit character
+	    }
+	    iter->update();  //updates position of projectile
+	  }  
+	}
+        for(iter=range2.begin(); iter!=range2.end(); iter++){ //same as above for player 2
+	  if (iter->OffScreen()){
+            iter->free();
           } else {
-            iter->render(SCREEN_WIDTH, SCREEN_HEIGHT, gRenderer);
-          }
-          iter->update();
-        }
+	    iter->Load(char2, gRenderer);
+	    rectproj=iter->get_location();
+	    if(SDL_HasIntersection(&rectproj, &rect1)){
+	      character1->damage(2, character2->facing());
+
+	    } else {
+	      iter->render(SCREEN_WIDTH, SCREEN_HEIGHT, gRenderer);
+	    }
+	    iter->update();
+	  }
+	}
 
 	ss.clear();
 	ss.str("");

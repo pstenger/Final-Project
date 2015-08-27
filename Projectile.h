@@ -29,7 +29,8 @@ class Projectile{
 		//Gets image dimensions
   		int getWidth();
   		int getHeight();
-  		SDL_Rect get_location();
+  		int OffScreen();
+		SDL_Rect get_location();
   		void update(); //update xpos
  	private:
 		//The actual hardware texture
@@ -146,6 +147,14 @@ int Projectile::getWidth()
 int Projectile::getHeight()
 {
   	return mHeight;
+}
+int Projectile::OffScreen()
+{
+  if(xpos<-100 || xpos>1280){
+    return 1;
+  } else {
+    return 0;
+  }
 }
 void Projectile::update(){
         if(direction=="left"){//velocity
