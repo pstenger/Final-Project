@@ -128,9 +128,10 @@ Section 5: Sprite/Image Resources
 
 1.Background/Stage image : http://smashbros-miiverse.com/stages/final-destination-wii-u
 
-
 2.True Type Font file: http://www.superluigibros.com/mario-bros-fonts
+
 3. Pacman Sprites: lisnovski.deviantart.com
+
 4. Megaman, Link, and Mario Sprites: gengarlink10.deviantart.com
 
 
